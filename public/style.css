@@ -1,0 +1,175 @@
+body {
+    margin: 0;
+    padding: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #2c3e50;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#app {
+    text-align: center;
+    width: 100%;
+    max-width: 800px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+/* Game Board */
+#game-board {
+    display: flex;
+    flex-direction: column;
+    height: 80vh;
+    justify-content: space-between;
+    padding: 20px;
+}
+
+.player-area {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.hand {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    min-height: 100px;
+}
+
+.card {
+    width: 60px;
+    height: 90px;
+    background-color: white;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin: 0 5px;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-weight: bold;
+    font-size: 1.2em;
+    position: relative;
+    cursor: pointer;
+    user-select: none;
+}
+
+.card.red {
+    color: red;
+}
+
+.card.black {
+    color: black;
+}
+
+.card-back {
+    background: repeating-linear-gradient(45deg,
+            #606dbc,
+            #606dbc 10px,
+            #465298 10px,
+            #465298 20px);
+}
+
+#table-area {
+    flex-grow: 1;
+
+    #talon-stack {
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 10;
+        width: 80px;
+        height: 120px;
+        background-color: #333;
+        border: 2px solid #555;
+        border-radius: 8px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        font-weight: bold;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+    }
+
+    #trump-card {
+        position: absolute;
+        top: 0;
+        left: 100px;
+        /* Side by side with gap */
+        z-index: 5;
+        /* No rotation for maximum visibility */
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    #trick-area {
+        display: flex;
+        gap: 20px;
+    }
+
+    #my-tricks-container {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 100px;
+        height: 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        pointer-events: none;
+        /* Let clicks pass through if needed */
+    }
+
+    #announcements-container {
+        position: absolute;
+        top: 20px;
+        left: 20px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        z-index: 100;
+        pointer-events: none;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+
+    .announcement-item {
+        background-color: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-size: 0.9em;
+        font-weight: bold;
+        border: 1px solid #aaa;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    #turn-indicator {
+        background-color: rgba(0, 0, 0, 0.5);
+        padding: 10px;
+        border-radius: 8px;
+        border: 1px solid #555;
+        display: inline-block;
+        min-width: 200px;
+        margin-top: 10px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }

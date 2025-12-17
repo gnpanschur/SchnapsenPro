@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="de">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Schnapsen Multiplayer</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="app">
+        <h1>Schnapsen Multiplayer</h1>
+        <div id="status">Connecting...</div>
+
+        <div id="lobby">
+            <input type="text" id="playerName" placeholder="Dein Name (A-Z)" maxlength="12">
+            <br><br>
+            <button id="createBtn">Raum erstellen</button>
+            <br><br>
+            <input type="text" id="roomCode" placeholder="Raumcode (5 Zeichen)" maxlength="5"
+                style="text-transform: uppercase;">
+            <button id="joinBtn">Raum beitreten</button>
+        </div>
+
+        <div id="game" style="display: none;">
+            <div class="header">
+                <h2>Raum: <span id="currentRoom"></span></h2>
+                <div id="score-board" style="font-size: 1.2em; margin: 10px 0;">
+                    <span><span id="my-name-display">Du</span>: <span id="my-points">0</span> (<span
+                            id="my-bummerl">0</span>)</span>
+                    <span style="margin: 0 10px;">|</span>
+                    <span><span id="opp-name-display">Gegner</span>: <span id="opponent-points">0</span> (<span
+                            id="opponent-bummerl">0</span>)</span>
+                </div>
+                <div id="gameStatus">Warte auf Gegner...</div>
+                <div id="turn-indicator" style="font-size: 1.1em; font-weight: bold; margin-top: 5px; color: #ffd700;">
+                </div>
+                <button id="nextRoundBtn"
+                    style="display: none; margin-top: 10px; padding: 10px 20px; font-size: 1.2em; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Neu
+                    geben</button>
+            </div>
+
+            <div id="game-board" class="hidden">
+                <div id="opponent-area" class="player-area">
+                    <div class="player-name" id="opponent-name">Gegner</div>
+                    <div id="opponent-hand" class="hand"></div>
+                </div>
+
+                <div id="table-area">
+                    <div id="announcements-container"></div>
+                    <div id="talon-container">
+                        <div id="talon-stack" class="card-back"></div>
+                        <div id="trump-card"></div>
+                        <div id="trump-indicator"
+                            style="position: absolute; bottom: -30px; width: 100%; text-align: center; font-weight: bold; color: white;">
+                        </div>
+                    </div>
+                    <div id="trick-area"></div>
+                    <div id="my-tricks-container"></div>
+                </div>
+
+                <div id="player-area" class="player-area">
+                    <div id="controls-container" style="text-align: center; margin-bottom: 10px; min-height: 40px;">
+                        <button id="exchangeBtn" class="action-btn"
+                            style="display: none; background-color: #2196F3;">Trumpf tauschen</button>
+                        <button id="announceBtn" class="action-btn"
+                            style="display: none; background-color: #ff9800;">20er / 40er Ansagen</button>
+                        <button id="closeTalonBtn" class="action-btn"
+                            style="display: none; background-color: #d32f2f;">Talon zudrehen</button>
+                    </div>
+                    <div id="player-hand" class="hand"></div>
+                    <div class="player-name" id="my-player-label">Du</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
