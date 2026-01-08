@@ -5,7 +5,8 @@ class Room {
         this.roomId = roomId;
         this.players = []; // Array of Player objects
         this.gameState = 'LOBBY'; // LOBBY, WAITING_FOR_PLAYER, DEALING, PLAYER_TURN, WAITING_FOR_RECONNECT, GAME_OVER
-        this.turnIndex = 0; // 0 or 1
+        this.dealerIndex = 0; // Track who is dealing (0 or 1)
+        this.turnIndex = (this.dealerIndex + 1) % 2; // Vorhand (non-dealer) starts
         this.deck = [];
         this.talon = [];
         this.trumpCard = null;
@@ -35,7 +36,11 @@ class Room {
         const isTrump = suit === this.trumpSuit;
         const points = isTrump ? 40 : 20;
 
-        player.points += points;
+        if (player.tricks.length > 0) {
+            player.points += points;
+        } else {
+            player.pendingPoints += points;
+        }
 
         // Set constraint: Must play one of the marriage cards
         player.constraint = { type: 'MUST_PLAY_MARRIAGE', suit: suit };
@@ -198,8 +203,18 @@ class Room {
         winner.points += points;
         winner.tricks.push([...this.currentTrick]);
 
+        if (winner.pendingPoints > 0) {
+            winner.points += winner.pendingPoints;
+            winner.pendingPoints = 0;
+        }
+
         const trickCards = [...this.currentTrick];
         this.currentTrick = [];
+
+        // Capture First Trick for Winner if not yet set
+        if (!winner.firstTrick) {
+            winner.firstTrick = [...trickCards];
+        }
 
         // Check for 66 points
         if (winner.points >= 66) {
@@ -270,6 +285,7 @@ class Room {
             winnerTotalPoints: winner.points, // Total points of winner
             loserTotalPoints: this.players.find(p => p.socketId !== winner.socketId).points, // Total points of loser
             dealtCards,
+            winnerFirstTrick: winner.firstTrick, // Send winner's first trick (might be same as before or new)
             talonSize: this.talon.length + (this.trumpCard ? 1 : 0),
             isTalonClosed: this.isTalonClosed
         };
@@ -300,6 +316,12 @@ class Room {
     }
 
     resetRound() {
+        this.gameState = 'DEALING';
+        // Alternate Dealer
+        this.dealerIndex = (this.dealerIndex + 1) % 2;
+        // Non-Dealer (Vorhand) starts
+        this.turnIndex = (this.dealerIndex + 1) % 2;
+
         this.players.forEach(p => p.resetForNewGame());
         this.deck = [];
         this.talon = [];
@@ -367,7 +389,7 @@ class Room {
         this.shuffleDeck();
         this.dealCards();
         this.gameState = 'PLAYER_TURN';
-        this.turnIndex = 0; // Player 1 starts (usually winner of previous, or random)
+        // this.turnIndex = 0; // Don't reset here, handled in resetRound or initially
     }
 
     addPlayer(player) {
@@ -420,6 +442,12 @@ class Room {
             // Creating a penalty logic: Winner gets max points usually, e.g. 3.
             // Or at least 2.
             bummerlLoss = Math.max(bummerlLoss, 2);
+
+            // Special Rule: If Opponent (Winner) has 0 tricks, it's Schneider -> 3 Bummerl
+            if (winner.tricks.length === 0) {
+                bummerlLoss = 3;
+            }
+
             if (loser.points === 0) bummerlLoss = 3;
         }
 
@@ -445,6 +473,12 @@ class Room {
             trickCards,
             matchOver
         };
+    }
+    resetMatch() {
+        this.resetRound();
+        this.players.forEach(p => {
+            p.bummerlPoints = 0;
+        });
     }
 }
 

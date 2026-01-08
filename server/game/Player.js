@@ -10,6 +10,8 @@ class Player {
         this.connected = true;
         this.connected = true;
         this.reconnectTimer = null;
+        this.pendingPoints = 0; // Points from marriage announcements that are waiting for a trick
+        this.firstTrick = null; // Stores the first trick won by this player
         this.constraint = null; // { type: 'MUST_PLAY_MARRIAGE', suit: 'HEARTS' }
     }
 
@@ -17,6 +19,8 @@ class Player {
         this.hand = [];
         this.tricks = [];
         this.points = 0;
+        this.pendingPoints = 0;
+        this.firstTrick = null;
     }
 }
 

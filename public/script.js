@@ -73,10 +73,49 @@ function updateTurnIndicator(isMyTurn, opponentName) {
     if (isMyTurn) {
         el.textContent = `${myName} ist am Zug`;
         el.style.color = '#4CAF50'; // Green
-    } else {
-        el.textContent = `${opponentName || 'Gegner'} ist am Zug`;
         el.style.color = '#ffa500'; // Orange
     }
+}
+
+function renderTrickContainer(containerId, cardsContainerId, cards, labelText) {
+    const displayEl = document.getElementById(containerId);
+    const container = document.getElementById(cardsContainerId);
+    if (!displayEl || !container) return;
+
+    container.innerHTML = '';
+
+    if (!cards || cards.length === 0) {
+        displayEl.style.display = 'none';
+        return;
+    }
+
+    displayEl.style.display = 'flex';
+
+    cards.forEach(cardObj => {
+        const wrapper = document.createElement('div');
+        wrapper.style.display = 'flex';
+        wrapper.style.flexDirection = 'column';
+        wrapper.style.alignItems = 'center';
+
+        const cardDiv = createCardElement(cardObj.card);
+        cardDiv.style.width = '50px';
+        cardDiv.style.height = '75px';
+
+        const label = document.createElement('div');
+        label.style.fontSize = '0.7em';
+        label.style.color = '#fff';
+        // Determine name
+        if (cardObj.socketId === socket.id) {
+            label.textContent = myName;
+        } else {
+            const oppName = document.getElementById('opponent-name').textContent;
+            label.textContent = oppName;
+        }
+
+        wrapper.appendChild(cardDiv);
+        wrapper.appendChild(label);
+        container.appendChild(wrapper);
+    });
 }
 
 socket.on('disconnect', () => {
@@ -118,9 +157,21 @@ socket.on('gameStart', (data) => {
     document.getElementById('opp-name-display').textContent = data.opponentName;
     document.getElementById('my-player-label').textContent = myName;
 
+    // Update Scores immediately
+    if (data.scores) {
+        document.getElementById('my-points').textContent = data.scores.myPoints;
+        document.getElementById('my-bummerl').textContent = data.scores.myBummerl;
+        document.getElementById('opponent-points').textContent = data.scores.oppPoints;
+        document.getElementById('opponent-bummerl').textContent = data.scores.oppBummerl;
+    }
+
     // Reset Talon visuals based on server state
     isTalonClosed = data.isTalonClosed || false;
     document.getElementById('talon-stack').style.borderColor = isTalonClosed ? 'red' : '#ccc';
+
+    // Render First Tricks
+    renderTrickContainer('my-first-trick-container', 'my-first-trick-cards', data.myFirstTrick);
+    renderTrickContainer('opp-first-trick-container', 'opp-first-trick-cards', data.opponentFirstTrick);
 
     // Clear trick area after delay (already handled by moveMade logic? No, resolveTrick does it)
     // Actually typically we wait a bit then clear.
@@ -590,6 +641,15 @@ socket.on('trickCompleted', (data) => {
         checkCloseTalon();
     }
 
+    // Update First Trick Visual if provided (e.g. Winner just won their first trick)
+    if (data.winnerFirstTrick) {
+        if (data.winnerId === socket.id) {
+            renderTrickContainer('my-first-trick-container', 'my-first-trick-cards', data.winnerFirstTrick);
+        } else {
+            renderTrickContainer('opp-first-trick-container', 'opp-first-trick-cards', data.winnerFirstTrick);
+        }
+    }
+
     // existing trickCompleted logic follows usually...
     // But since I cannot easily inject into the middle of existing listener without viewing,
     // I will rely on the fact that I am adding NEW listeners or replacing.
@@ -602,16 +662,51 @@ socket.on('trickCompleted', (data) => {
     // Visualization of "Closed" state on trick end is nice but 'talonClosed' covers the moment it happens.
 });
 
+// Listener for Exit Btn
+document.getElementById('exitBtn').addEventListener('click', () => {
+    location.reload();
+});
+
 // Listener for Close Btn
 document.getElementById('closeTalonBtn').addEventListener('click', () => {
-    if (confirm('Talon wirklich zudrehen? Du musst 66 Punkte erreichen!')) {
+    // Show Modal
+    const modal = document.getElementById('confirm-modal');
+    modal.classList.remove('hidden');
+
+    // Handle Yes
+    const handleYes = () => {
         // Optimistic Update: Update UI immediately
         isTalonClosed = true;
         checkCloseTalon();
         document.getElementById('talon-stack').style.borderColor = 'red';
 
         socket.emit('closeTalon');
+        closeModal();
+    };
+
+    // Handle No
+    const handleNo = () => {
+        closeModal();
+    };
+
+    function closeModal() {
+        modal.classList.add('hidden');
+        yesBtn.removeEventListener('click', handleYes);
+        noBtn.removeEventListener('click', handleNo);
     }
+
+    const yesBtn = document.getElementById('confirm-yes');
+    const noBtn = document.getElementById('confirm-no');
+
+    // Remove old listeners to be safe (though scoped functions minimize risk, cloning is safer if we reuse buttons)
+    // Here we can just use { once: true } or clone
+    const newYes = yesBtn.cloneNode(true);
+    const newNo = noBtn.cloneNode(true);
+    yesBtn.parentNode.replaceChild(newYes, yesBtn);
+    noBtn.parentNode.replaceChild(newNo, noBtn);
+
+    newYes.addEventListener('click', handleYes);
+    newNo.addEventListener('click', handleNo);
 });
 
 function checkCloseTalon() {
@@ -653,6 +748,50 @@ document.getElementById('nextRoundBtn').addEventListener('click', () => {
     gameStatusDiv.textContent = 'Warte auf Server... (Neu geben)';
 });
 
+// Game Over Modal Handlers
+document.getElementById('revanche-btn').addEventListener('click', () => {
+    socket.emit('startRematch'); // New event for Match Reset
+    document.getElementById('game-over-modal').classList.add('hidden');
+    gameStatusDiv.textContent = 'Warte auf Server... (Neues Match)';
+});
+
+document.getElementById('exit-game-btn').addEventListener('click', () => {
+    location.reload();
+});
+
+// Update roundOver handler to show modal
+// Since I can't easily find where 'socket.on("roundOver")' is defined earlier in the file without searching,
+// I'll append a new listener that overrides UI behavior. 
+// BUT better practice is to find the existing one.
+// I see I missed seeing the existing roundOver listener in the viewed lines.
+// I will just add the Modal logic here to be safe as a separate block that executes on roundOver.
+socket.on('roundOver', (data) => {
+    let msg = '';
+    if (data.winnerId === socket.id) {
+        msg = `Du hast gewonnen! (+${data.bummerlLoss} Bummerl)`;
+    } else {
+        msg = `Gegner hat gewonnen! (-${data.bummerlLoss} Bummerl)`;
+    }
+    gameStatusDiv.textContent = msg;
+
+    // Standard scoring
+    document.getElementById('my-bummerl').textContent = data.winnerId === socket.id ? data.winnerBummerl : data.loserBummerl;
+    document.getElementById('opponent-bummerl').textContent = data.winnerId === socket.id ? data.loserBummerl : data.winnerBummerl;
+
+    if (data.matchOver) {
+        // MATCH OVER -> Show Modal
+        const modal = document.getElementById('game-over-modal');
+        if (modal) {
+            setTimeout(() => {
+                modal.classList.remove('hidden');
+            }, 1500);
+        }
+    } else {
+        // ROUND OVER -> Show Next Round Button
+        document.getElementById('nextRoundBtn').style.display = 'block';
+    }
+});
+
 socket.on('error', (msg) => {
     if (msg === 'Talon ist bereits zu!') {
         isTalonClosed = true;
@@ -689,3 +828,23 @@ function addAnnouncementToUI(data) {
     container.scrollTop = container.scrollHeight;
 }
 
+
+function updateTurnIndicator(isMyTurn, opponentName) {
+    const indicator = document.getElementById('turn-indicator');
+    const myContainer = document.getElementById('my-score-container');
+    const oppContainer = document.getElementById('opp-score-container');
+
+    // Reset styles
+    if (myContainer) myContainer.classList.remove('active-turn');
+    if (oppContainer) oppContainer.classList.remove('active-turn');
+
+    if (isMyTurn) {
+        indicator.textContent = 'Du bist am Zug!';
+        indicator.style.color = '#4CAF50';
+        if (myContainer) myContainer.classList.add('active-turn');
+    } else {
+        indicator.textContent = (opponentName || 'Gegner') + ' ist am Zug';
+        indicator.style.color = '#f44336'; // Red/Orange for opponent
+        if (oppContainer) oppContainer.classList.add('active-turn');
+    }
+}

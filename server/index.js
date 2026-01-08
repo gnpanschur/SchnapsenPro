@@ -98,6 +98,8 @@ io.on('connection', (socket) => {
                     },
                     announcements: room.announcements, // Send history
                     isTalonClosed: room.isTalonClosed,
+                    myFirstTrick: p.firstTrick,
+                    opponentFirstTrick: opponent ? opponent.firstTrick : null,
                     playerName: p.name // Send own name
                 });
             } else {
@@ -111,6 +113,8 @@ io.on('connection', (socket) => {
                         talonSize: room.talon.length,
                         isMyTurn: index === room.turnIndex,
                         opponentName: opponent ? opponent.name : 'Gegner',
+                        myFirstTrick: null,
+                        opponentFirstTrick: null,
                         scores: { // Initial scores
                             myPoints: 0,
                             myBummerl: 0,
@@ -260,7 +264,8 @@ io.on('connection', (socket) => {
                     winnerTotalPoints: result.winnerTotalPoints,
                     loserTotalPoints: result.loserTotalPoints,
                     talonSize: result.talonSize,
-                    isTalonClosed: result.isTalonClosed // Added isTalonClosed
+                    isTalonClosed: result.isTalonClosed, // Added isTalonClosed
+                    winnerFirstTrick: result.winnerFirstTrick // Forward first trick info
                 });
 
                 // Deal new cards
@@ -377,6 +382,46 @@ io.on('connection', (socket) => {
         io.to(roomId).emit('gameStateUpdate', 'Neue Runde gestartet!');
     });
 
+    socket.on('startRematch', () => {
+        // Same room finding logic
+        let room;
+        let roomId;
+        for (const [id, r] of rooms.entries()) {
+            if (r.getPlayer(socket.id)) {
+                room = r;
+                roomId = id;
+                break;
+            }
+        }
+        if (!room) return;
+
+        room.resetMatch();
+
+        // Notify all players that a new match started
+        room.players.forEach((player, index) => {
+            const opponent = room.players.find(op => op.socketId !== player.socketId);
+            io.to(player.socketId).emit('gameStart', {
+                hand: player.hand,
+                trumpCard: room.trumpCard,
+                trumpSuit: room.trumpSuit,
+                talonSize: room.talon.length,
+                isMyTurn: index === room.turnIndex,
+                opponentName: opponent ? opponent.name : 'Gegner',
+                myFirstTrick: null,
+                opponentFirstTrick: null,
+                scores: {
+                    myPoints: 0,
+                    myBummerl: 0,
+                    oppPoints: 0,
+                    oppBummerl: 0
+                },
+                announcements: [],
+                isTalonClosed: false,
+                playerName: player.name
+            });
+        });
+        io.to(roomId).emit('gameStateUpdate', 'Neues Match gestartet!');
+    });
 
     socket.on('disconnect', () => {
         console.log('User disconnected:', socket.id);

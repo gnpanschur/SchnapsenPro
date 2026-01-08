@@ -21,6 +21,23 @@ body {
     display: none !important;
 }
 
+.exit-btn {
+    background-color: #ff4444;
+    color: white;
+    border: none;
+    padding: 5px 15px;
+    border-radius: 5px;
+    margin-left: 20px;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 0.8em;
+    vertical-align: middle;
+}
+
+.exit-btn:hover {
+    background-color: #ff0000;
+}
+
 /* Game Board */
 #game-board {
     display: flex;
@@ -173,3 +190,76 @@ body {
         margin-top: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
+}
+
+/* Modal Styling */
+.modal {
+    display: flex;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    /* Darker backdrop */
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(5px);
+}
+
+.modal.hidden {
+    display: none;
+}
+
+.modal-content {
+    background: linear-gradient(135deg, #2a2a2a, #333);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid #444;
+    text-align: center;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+    color: white;
+    font-size: 1.2em;
+    min-width: 300px;
+    animation: modalPop 0.3s ease-out;
+}
+
+@keyframes modalPop {
+    from {
+        transform: scale(0.8);
+        opacity: 0;
+    }
+
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-buttons {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.modal-btn {
+    font-size: 2em;
+    /* Large emojis */
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s;
+    padding: 10px;
+    border-radius: 10px;
+}
+
+.modal-btn:hover {
+    transform: scale(1.2);
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.modal-btn:active {
+    transform: scale(0.95);
+}

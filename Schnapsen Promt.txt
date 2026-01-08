@@ -107,11 +107,7 @@ Beginne mit:
 1. Erweiterte Spielregeln (Priorität: Hoch)
 Derzeit fehlt noch die spezifische Logik, die Schnapsen so taktisch macht.
 
-20er / 40er Ansagen: Implementierung der Logik, um 20 Punkte (oder 40 bei Trumpf) anzusagen, wenn man König und Dame der gleichen Farbe hält und am Zug ist.
-Trumpf austauschen (Der Bube): Ein Spieler, der den Trumpf-Buben hält, sollte diesen gegen die offene Trumpfkarte austauschen können, sofern er am Zug ist.
-Talon zudrehen: Ein Spieler sollte die Möglichkeit haben, den Talon zu "schließen". Ab diesem Moment werden keine Karten mehr nachgezogen.
-Farb- und Stichzwang: Sobald der Talon leer ist oder zugedreht wurde, muss das Spiel strengere Regeln anwenden:
-Farbzwang (Bedienpflicht).
+
 Stichzwang (Man muss stechen, wenn man bedienen kann). Aktuell prüft der Code dies noch nicht konsequent.
 2. UI/UX Erweiterungen (Priorität: Mittel)
 Das Frontend muss diese neuen Aktionen unterstützen.
