@@ -120,7 +120,7 @@ function renderTrickContainer(containerId, cardsContainerId, cards, labelText) {
 
 socket.on('disconnect', () => {
     statusDiv.textContent = 'Verbindung verloren.';
-    statusDiv.style.color = 'red';
+    statusDiv.style.color = '244,67,54';
     lobbyDiv.style.display = 'block';
     gameDiv.style.display = 'none';
 });
@@ -161,16 +161,23 @@ socket.on('gameStart', (data) => {
     if (data.scores) {
         document.getElementById('my-points').textContent = data.scores.myPoints;
         document.getElementById('my-bummerl').textContent = data.scores.myBummerl;
-        document.getElementById('opponent-points').textContent = data.scores.oppPoints;
+        document.getElementById('my-matches').textContent = data.scores.myMatchWins || 0;
+        // document.getElementById('opponent-points').textContent = data.scores.oppPoints;
         document.getElementById('opponent-bummerl').textContent = data.scores.oppBummerl;
+        document.getElementById('opponent-matches').textContent = data.scores.oppMatchWins || 0;
     }
 
     // Reset Talon visuals based on server state
     isTalonClosed = data.isTalonClosed || false;
-    document.getElementById('talon-stack').style.borderColor = isTalonClosed ? 'red' : '#ccc';
+    document.getElementById('talon-stack').style.borderColor = isTalonClosed ? '244,67,54' : '#ccc';
+
+    // Set trump card opacity based on talon state
+    const trumpCard = document.getElementById('trump-card');
+    if (trumpCard) {
+        trumpCard.style.opacity = isTalonClosed ? '0.5' : '1';
+    }
 
     // Render First Tricks
-    renderTrickContainer('my-first-trick-container', 'my-first-trick-cards', data.myFirstTrick);
     renderTrickContainer('opp-first-trick-container', 'opp-first-trick-cards', data.opponentFirstTrick);
 
     // Clear trick area after delay (already handled by moveMade logic? No, resolveTrick does it)
@@ -212,13 +219,13 @@ socket.on('gameStart', (data) => {
 
     // Reset scores for new round
     document.getElementById('my-points').textContent = '0';
-    document.getElementById('opponent-points').textContent = '0';
+    // document.getElementById('opponent-points').textContent = '0';
 
     myHand = data.hand;
     currentTrumpSuit = data.trumpSuit; // Set global trump suit
     currentTrumpCardObj = data.trumpCard; // Set global trump card
-    renderHand(myHand);
     renderTable(data.trumpCard, data.talonSize, data.trumpSuit);
+    renderHand(myHand);
     renderOpponentHand(5);
 
     // Render announcements
@@ -333,7 +340,7 @@ function renderTable(trumpCard, talonSize, trumpSuit) {
     const indicator = document.getElementById('trump-indicator');
     if (trumpSuit) {
         const symbol = getSuitSymbol(trumpSuit);
-        const color = (trumpSuit === 'HEARTS' || trumpSuit === 'DIAMONDS') ? 'red' : 'white'; // White for contrast on dark bg
+        const color = (trumpSuit === 'HEARTS' || trumpSuit === 'DIAMONDS') ? '244,67,54' : 'white'; // White for contrast on dark bg
         indicator.style.color = color;
         indicator.textContent = `Trumpf: ${symbol} `;
     }
@@ -341,11 +348,15 @@ function renderTable(trumpCard, talonSize, trumpSuit) {
 
 function createCardElement(card) {
     const el = document.createElement('div');
-    const suitSymbol = getSuitSymbol(card.suit);
-    const color = (card.suit === 'HEARTS' || card.suit === 'DIAMONDS') ? 'red' : 'black';
+    el.className = 'card';
 
-    el.className = `card ${color} `;
-    el.textContent = `${card.rank} ${suitSymbol} `;
+    const img = document.createElement('img');
+    img.src = `assets/webp/${card.suit}_${card.rank}.webp`;
+    img.alt = `${card.rank} of ${card.suit}`;
+    img.style.width = '100%';
+    img.style.height = '100%';
+
+    el.appendChild(img);
     el.dataset.suit = card.suit;
     el.dataset.rank = card.rank;
     return el;
@@ -377,8 +388,8 @@ socket.on('announcementMade', (data) => {
         const current = parseInt(document.getElementById('my-points').textContent) || 0;
         document.getElementById('my-points').textContent = current + pts;
     } else {
-        const current = parseInt(document.getElementById('opponent-points').textContent) || 0;
-        document.getElementById('opponent-points').textContent = current + pts;
+        // const current = parseInt(document.getElementById('opponent-points').textContent) || 0;
+        // document.getElementById('opponent-points').textContent = current + pts;
     }
 });
 
@@ -390,7 +401,7 @@ socket.on('moveMade', (data) => {
         isTalonClosed = data.isTalonClosed;
         checkCloseTalon();
         // Also update border if needed
-        document.getElementById('talon-stack').style.borderColor = isTalonClosed ? 'red' : '#ccc';
+        document.getElementById('talon-stack').style.borderColor = isTalonClosed ? '244,67,54' : '#ccc';
     }
 
     // Remove from hand if it's my move
@@ -449,10 +460,10 @@ socket.on('trickCompleted', (data) => {
     const isWinner = data.winnerId === socket.id;
     if (isWinner) {
         document.getElementById('my-points').textContent = data.winnerTotalPoints;
-        document.getElementById('opponent-points').textContent = data.loserTotalPoints;
+        // document.getElementById('opponent-points').textContent = data.loserTotalPoints;
     } else {
         document.getElementById('my-points').textContent = data.loserTotalPoints;
-        document.getElementById('opponent-points').textContent = data.winnerTotalPoints;
+        // document.getElementById('opponent-points').textContent = data.winnerTotalPoints;
     }
 
     // Update Turn Indicator: Winner leads the next trick
@@ -466,7 +477,7 @@ socket.on('trickCompleted', (data) => {
         const tricksContainer = document.getElementById('my-tricks-container');
         data.trickCards.forEach(item => {
             const cardEl = createCardElement(item.card);
-            cardEl.style.transform = 'scale(0.6)'; // Make them smaller
+            cardEl.style.transform = 'scale(0.9)'; // Make them smaller
             cardEl.style.margin = '-30px 0'; // Overlap
             tricksContainer.appendChild(cardEl);
         });
@@ -530,13 +541,17 @@ socket.on('roundOver', (data) => {
     document.getElementById('my-bummerl').textContent = isWinner ? data.winnerBummerl : data.loserBummerl;
     document.getElementById('opponent-bummerl').textContent = isWinner ? data.loserBummerl : data.winnerBummerl;
 
+    // Update Match Wins display
+    document.getElementById('my-matches').textContent = isWinner ? data.winnerMatchWins : data.loserMatchWins;
+    document.getElementById('opponent-matches').textContent = isWinner ? data.loserMatchWins : data.winnerMatchWins;
+
     // Update Round Points display to show final score
     if (isWinner) {
         document.getElementById('my-points').textContent = data.winnerTotalPoints;
-        document.getElementById('opponent-points').textContent = data.loserTotalPoints;
+        // document.getElementById('opponent-points').textContent = data.loserTotalPoints;
     } else {
         document.getElementById('my-points').textContent = data.loserTotalPoints;
-        document.getElementById('opponent-points').textContent = data.winnerTotalPoints;
+        // document.getElementById('opponent-points').textContent = data.winnerTotalPoints;
     }
 
     gameStatusDiv.textContent = `${msg} ${bummerlMsg} `;
@@ -544,8 +559,16 @@ socket.on('roundOver', (data) => {
     // ... (rest of roundOver)
     if (data.matchOver) {
         const winnerName = isWinner ? 'Du hast' : 'Gegner hat';
-        if (confirm(`SPIEL VORBEI! ${winnerName} das Match gewonnen! Neues Spiel ? `)) {
-            location.reload();
+        const msg = `MATCH VORBEI! ${winnerName} das Match gewonnen!`;
+        const modal = document.getElementById('game-over-modal');
+        const msgEl = document.getElementById('game-over-message');
+
+        if (msgEl) msgEl.textContent = msg;
+
+        if (modal) {
+            setTimeout(() => {
+                modal.classList.remove('hidden');
+            }, 1500);
         }
     } else {
         const nextRoundBtn = document.getElementById('nextRoundBtn');
@@ -629,7 +652,14 @@ socket.on('talonClosed', (data) => {
     isTalonClosed = true;
     const isMe = data.closerId === socket.id;
     gameStatusDiv.textContent = `${isMe ? 'Du hast' : data.closerName + ' hat'} den Talon ZUGEDREHT!`;
-    document.getElementById('talon-stack').style.borderColor = 'red';
+    document.getElementById('talon-stack').style.borderColor = '244,67,54';
+
+    // Make trump card semi-transparent
+    const trumpCard = document.getElementById('trump-card');
+    if (trumpCard) {
+        trumpCard.style.opacity = '0.5';
+    }
+
     checkCloseTalon(); // refresh buttons
 });
 
@@ -643,9 +673,7 @@ socket.on('trickCompleted', (data) => {
 
     // Update First Trick Visual if provided (e.g. Winner just won their first trick)
     if (data.winnerFirstTrick) {
-        if (data.winnerId === socket.id) {
-            renderTrickContainer('my-first-trick-container', 'my-first-trick-cards', data.winnerFirstTrick);
-        } else {
+        if (data.winnerId !== socket.id) {
             renderTrickContainer('opp-first-trick-container', 'opp-first-trick-cards', data.winnerFirstTrick);
         }
     }
@@ -678,7 +706,7 @@ document.getElementById('closeTalonBtn').addEventListener('click', () => {
         // Optimistic Update: Update UI immediately
         isTalonClosed = true;
         checkCloseTalon();
-        document.getElementById('talon-stack').style.borderColor = 'red';
+        document.getElementById('talon-stack').style.borderColor = '244,67,54';
 
         socket.emit('closeTalon');
         closeModal();
@@ -721,9 +749,10 @@ function checkCloseTalon() {
         btn.style.display = 'inline-block';
         btn.textContent = 'Talon ist zu';
         btn.disabled = true;
-        btn.style.opacity = '0.6';
+        //btn.style.opacity = '0.99';
         btn.style.cursor = 'not-allowed';
-        btn.style.backgroundColor = '#808080'; // Gray when closed
+        btn.style.backgroundColor = '#ffffffff'; // White when closed
+        btn.style.color = '#000000'; // Black text for readability
     } else if (hasTalon) {
         btn.style.display = 'inline-block';
         btn.textContent = 'Talon zudrehen';
@@ -765,32 +794,7 @@ document.getElementById('exit-game-btn').addEventListener('click', () => {
 // BUT better practice is to find the existing one.
 // I see I missed seeing the existing roundOver listener in the viewed lines.
 // I will just add the Modal logic here to be safe as a separate block that executes on roundOver.
-socket.on('roundOver', (data) => {
-    let msg = '';
-    if (data.winnerId === socket.id) {
-        msg = `Du hast gewonnen! (+${data.bummerlLoss} Bummerl)`;
-    } else {
-        msg = `Gegner hat gewonnen! (-${data.bummerlLoss} Bummerl)`;
-    }
-    gameStatusDiv.textContent = msg;
 
-    // Standard scoring
-    document.getElementById('my-bummerl').textContent = data.winnerId === socket.id ? data.winnerBummerl : data.loserBummerl;
-    document.getElementById('opponent-bummerl').textContent = data.winnerId === socket.id ? data.loserBummerl : data.winnerBummerl;
-
-    if (data.matchOver) {
-        // MATCH OVER -> Show Modal
-        const modal = document.getElementById('game-over-modal');
-        if (modal) {
-            setTimeout(() => {
-                modal.classList.remove('hidden');
-            }, 1500);
-        }
-    } else {
-        // ROUND OVER -> Show Next Round Button
-        document.getElementById('nextRoundBtn').style.display = 'block';
-    }
-});
 
 socket.on('error', (msg) => {
     if (msg === 'Talon ist bereits zu!') {
@@ -848,3 +852,37 @@ function updateTurnIndicator(isMyTurn, opponentName) {
         if (oppContainer) oppContainer.classList.add('active-turn');
     }
 }
+
+// Info Modal Controls
+const infoModal = document.getElementById('info-modal');
+const infoBtnLobby = document.getElementById('infoBtn');
+const infoBtnGame = document.getElementById('infoBtnGame');
+const closeInfoBtn = document.getElementById('close-info-btn');
+
+// Open info modal from lobby
+if (infoBtnLobby) {
+    infoBtnLobby.addEventListener('click', () => {
+        infoModal.classList.remove('hidden');
+    });
+}
+
+// Open info modal from game
+if (infoBtnGame) {
+    infoBtnGame.addEventListener('click', () => {
+        infoModal.classList.remove('hidden');
+    });
+}
+
+// Close info modal
+if (closeInfoBtn) {
+    closeInfoBtn.addEventListener('click', () => {
+        infoModal.classList.add('hidden');
+    });
+}
+
+// Close modal when clicking outside
+infoModal.addEventListener('click', (e) => {
+    if (e.target === infoModal) {
+        infoModal.classList.add('hidden');
+    }
+});

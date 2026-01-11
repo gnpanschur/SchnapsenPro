@@ -131,7 +131,87 @@ npm install
 npm run dev
 http://localhost:3000/
 
+okay, mach das
+
  lade die Seite neu - am besten mit STRG + F5
 
 beim zudrehen Verbindung verloren
+
+Beim Zudrehen: Fenster öffnet sich: "willst du wirklich zudrehen?✅❌"
+
+Ich werde wie gewünscht ein benutzerdefiniertes Popup-Fenster für die Bestätigung „Talon schließen“ mit den Schaltflächen ✅ und ❌ hinzufügen.
+
+Ich habe das benutzerdefinierte Bestätigungsfenster implementiert!
+
+Wenn Sie nun auf „Talon zudrehen” klicken, erscheint anstelle der Browser-Warnmeldung ein dunkles Popup-Fenster im Glas-Morphismus-Stil mit großen ✅- und ❌-Schaltflächen.
+
+Probieren Sie es doch einmal im Browser aus! Gefällt es Ihnen?
+
+Füge einen EXIT Button hinzu, Das ganze Spiel und auch Lobby wird beendet.
+
+20 oder 40 punkte zählt ich nur, wenn ich mindestens einen beliebigen  Stich habe.
+Wenn Spiel vorbei, dann dropdown  "Revanche?" (neues Spiel) oder EXIT
+Spiel beendet.
+Möchtest du eine Revanche starten oder das Spiel verlassen?
+
+Revanche ist erst nach 7 Bummerl möglich.
+Die Auswahl „Revanche / Exit“ wird nur nach Match-Ende (7 Bummerl) angezeigt.
+Bei Revanche werden Spielstand und Bummerl beider Spieler auf 0 gesetzt und ein neues Match gestartet.
+
+wenn neu geben, dann alternate between two Players
+
+Beim "neu Geben" wechselt der Geber abwechselnd zwischen den beiden Spielern.
+Zuerst gibt Spieler A, beim nächsten Spiel Spieler B, dann wieder Spieler A usw. Der Geber wechselt nach jedem Spiel
+
+Er hat den letzten Zug (20er oder 40er angesagt) noch im Memory, obwohl ein jetzt "neues Spiel" ist. Deswegen verlangt er König oder Dame zu beginn, was nicht richtig ist
+
+Meine Punktezahl beim Gegner nicht anzeigen
+
+(Auf localhost: 3000 wird folgendes angezeigt:
+SPIEL VORBEI! Gegner hat das Match gewonnen! Neues Spiel ? )
+
+Diese Info soll nicht angezeigt werden! Das führt bei OK zum Absturz.
+
+Statt dessen soll das "Popup-Fenster - Revanche / EXIT" erscheinen
+-----------------------------------------
+Wenn ich am Zug bin, kann ich den Trumpf austauschen, auch sofort ganz am Anfang.
+
+Wenn ein Match gewonnen, dann Neues Info Text Feld : Name xxx 1 Match gewonnen. Bei Schneider 2 Matchpunkte hinzu (das geht bis 7)
+----------------------------------------------------------
+Spielkarte Größe: 59x91 mm / 300 DPI (Druck, ordentlich scharf):
+696 × 1075 px
+
+96 DPI (Bildschirm, Klassiker):
+223 × 344 px
+
+mit 58 KB exportiert jpg soll aber dann (oder besser WebP) 30 - 40 KB
+
+A     Letzer Name: As (Ass) — 11 Punkte
+10   Letzer Name: Zehner — 10 Punkte
+K    Letzer Name: König — 4 Punkte
+Q    Letzer Name: Dame (im deutschen Blatt oft Ober) — 3 Punkte
+J     Letzer Name: Bube (im deutschen Blatt oft Unter) — 2 Punkte
+
+♣ / ♠ / ♦ / ♥
+
+Rückseite: BACK.jpg
+Vorderseiten: [FARBE]_[WERT].jpg
+Farben: HEARTS, DIAMONDS, SPADES, CLUBS
+Werte: A, 10, K, Q, J
+Beispiele:
+
+HEARTS_A.jpg (Herz As)
+CLUBS_J.jpg (Kreuz Bube)
+BACK.jpg (Rückseite)
+
+HEARTS → Herz → rot
+DIAMONDS → Karo → rot
+SPADES → Pik → schwarz
+CLUBS → Kreuz → schwarz
+
+D:\Antigravity\public\assets\webp
+
+
+
+
 

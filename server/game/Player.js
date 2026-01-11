@@ -21,6 +21,7 @@ class Player {
         this.points = 0;
         this.pendingPoints = 0;
         this.firstTrick = null;
+        this.constraint = null;
     }
 }
 

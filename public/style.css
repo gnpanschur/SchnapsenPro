@@ -2,13 +2,15 @@ body {
     margin: 0;
     padding: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #2c3e50;
+    background-color: #21532e;
+    /* Billiard Green */
     color: white;
     display: flex;
     justify-content: center;
     align-items: center;
     height: 100vh;
     overflow: hidden;
+    transform: scale(0.8);
 }
 
 #app {
@@ -61,37 +63,24 @@ body {
 }
 
 .card {
-    width: 60px;
-    height: 90px;
-    background-color: white;
+    width: 90px;
+    height: 135px;
+    background-color: transparent;
     border-radius: 5px;
-    border: 1px solid #ccc;
+    border: none;
     margin: 0 5px;
-    color: black;
     display: flex;
     justify-content: center;
     align-items: center;
-    font-weight: bold;
-    font-size: 1.2em;
     position: relative;
     cursor: pointer;
     user-select: none;
 }
 
-.card.red {
-    color: red;
-}
-
-.card.black {
-    color: black;
-}
-
 .card-back {
-    background: repeating-linear-gradient(45deg,
-            #606dbc,
-            #606dbc 10px,
-            #465298 10px,
-            #465298 20px);
+    background-image: url('assets/webp/back.webp');
+    background-size: cover;
+    background-position: center;
 }
 
 #table-area {
@@ -99,26 +88,30 @@ body {
 
     #talon-stack {
         position: absolute;
-        top: 0;
+        top: 50%;
+        transform: translateY(-50%);
         left: 0;
         z-index: 10;
-        width: 80px;
-        height: 120px;
-        background-color: #333;
-        border: 2px solid #555;
-        border-radius: 8px;
+        width: 90px;
+        height: 135px;
+        background-image: url('assets/webp/back.webp');
+        background-size: cover;
+        background-position: center;
+        border-radius: 5px;
         display: flex;
         justify-content: center;
         align-items: center;
         color: white;
         font-weight: bold;
+        text-shadow: 1px 1px 2px black;
         box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
     }
 
     #trump-card {
         position: absolute;
-        top: 0;
-        left: 100px;
+        top: 50%;
+        transform: translateY(-50%);
+        left: 90px;
         /* Side by side with gap */
         z-index: 5;
         /* No rotation for maximum visibility */
@@ -128,25 +121,35 @@ body {
     #trick-area {
         display: flex;
         gap: 20px;
+        justify-content: center;
+        margin: 10vh auto 0;
     }
 
     #my-tricks-container {
         position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        right: 40px;
+        /* Der Abstand von oben in % */
+        top: 30%;
         width: 100px;
-        height: 400px;
-        display: flex;
-        flex-direction: column;
+        /* Die Höhe des containers */
+        height: 20%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 5px;
         align-items: center;
         pointer-events: none;
         /* Let clicks pass through if needed */
     }
 
+    #my-tricks-container .card {
+        transform: scale(0.9);
+        margin: -5px;
+        /* Ermöglicht Überlappung */
+    }
+
     #announcements-container {
         position: absolute;
-        top: 20px;
+        bottom: 170px;
         left: 20px;
         display: flex;
         flex-direction: column;
@@ -262,4 +265,231 @@ body {
 
 .modal-btn:active {
     transform: scale(0.95);
+}
+
+/* --- Mobile / Landscape Enforcement --- */
+
+/* Default: Warning is hidden via inline style or class, but we style it here */
+#landscape-warning {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #21532e;
+    z-index: 9999;
+    color: white;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* Show Warning on Portrait */
+@media screen and (orientation: portrait) {
+    #landscape-warning {
+        display: flex !important;
+    }
+
+    /* Hide all other children of #app */
+    #app>*:not(#landscape-warning) {
+        display: none !important;
+    }
+}
+
+/* Mobile Landscape Optimizations (Small height) */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+
+    /* Reset body scale for mobile landscape */
+    body {
+        transform: scale(1) !important;
+    }
+
+    /* Scale down the entire game board to fit */
+    #game-board {
+        height: 100vh;
+        padding: 0 5px;
+        /* Side padding */
+        box-sizing: border-box;
+        position: relative;
+        /* Context for absolute children */
+
+        /* Flex Center Vertical */
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Center content vertically */
+    }
+
+    /* Position Game Title Top Right */
+    #app>h1 {
+        position: absolute;
+        top: 5px;
+        right: 160px;
+        /* Schnapsen für 2 Platzierung*/
+        left: auto;
+        font-size: 1em;
+        margin: 0;
+        z-index: 200;
+        text-shadow: 1px 1px 2px black;
+        pointer-events: none;
+    }
+
+    /* Move Info/Header to Top Left */
+    .header {
+        position: absolute;
+        top: 5px;
+        left: 10px;
+        /* Swapped from right */
+        right: auto;
+        text-align: left;
+        /* Swapped from right */
+        z-index: 200;
+        background-color: transparent;
+        /* improved visibility */
+        padding: 5px;
+        border-radius: 5px;
+        pointer-events: none;
+        /* Let clicks pass trough to table if needed, but buttons need events */
+    }
+
+    /* Re-enable pointer events for buttons inside header */
+    .header button {
+        pointer-events: auto;
+    }
+
+    .header h2 {
+        font-size: 0.9em;
+        margin: 0;
+        display: inline-block;
+    }
+
+    #score-board {
+        font-size: 0.9em !important;
+        margin: 2px 0 !important;
+    }
+
+    #gameStatus {
+        font-size: 0.8em;
+    }
+
+    /* Reduce Card Size */
+    .card {
+        width: 68px !important;
+        height: 102px !important;
+    }
+
+    #talon-stack {
+        width: 68px !important;
+        height: 102px !important;
+    }
+
+    #trump-card {
+        left: 70px !important;
+        /* Adjust overlap */
+    }
+
+    /* Layout Adjustments */
+    .hand {
+        min-height: 75px;
+        margin-top: 2px;
+    }
+
+    /* Player Area (My Hand) needs to be definitely visible */
+    #player-area {
+        position: absolute;
+        bottom: 15px;
+        /* Fixed distance from bottom */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+    }
+
+    /* Opponent Area (Top) */
+    #opponent-area {
+        position: absolute;
+        top: -50px;
+        /* Just below title/header potentially, or allow overlap if using center space */
+        left: 50%;
+        transform: translateX(-50%);
+        width: 100%;
+        margin-top: 0;
+    }
+
+    #table-area {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        /* Lock table to center */
+        top: 40%;
+        /* Center vertically */
+        left: 50%;
+        transform: translate(-50%, -50%);
+        /* Center */
+        width: 100%;
+        height: auto;
+    }
+
+    /* Talon Position - Move to left side explicitly if needed, or let it flow in flex */
+    /* Since table-area is centered, talon container inside it fits well? 
+       Actually, talon-container is absolute in style.css for desktop? 
+       Check desktop styles: #talon-stack is absolute inside #table-area!
+       We need to ensure #table-area is relative context.
+    */
+
+    #talon-container {
+        position: absolute;
+        left: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+    }
+
+    #trick-area {
+        gap: 10px;
+        /* Ensure it's centered */
+        margin: 0 auto;
+    }
+
+    #announcements-container {
+        position: absolute !important;
+        left: 5px !important;
+        bottom: -200px !important;
+        /* Position at bottom left in landscape */
+        scale: 0.8;
+        transform-origin: bottom left;
+    }
+
+    #my-tricks-container {
+        right: 10px;
+        /* Der Abstand von oben in % */
+        top: 5%;
+        scale: 0.8;
+        transform-origin: center right;
+        display: grid !important;
+        grid-template-columns: 1fr 1fr;
+        gap: 1px;
+        width: auto;
+        /* Allow resizing Die Höhe in%*/
+        height: 70%;
+        /* Fit content */
+        max-height: 80vh;
+        /* Prevent overflow */
+    }
+
+    #opp-first-trick-container {
+        position: fixed !important;
+        /* Break out of table-area */
+        top: 5px !important;
+        bottom: auto !important;
+        right: 5px !important;
+        display: flex !important;
+        /* Ensure it's visible if hidden by default */
+        scale: 0.9;
+        transform-origin: top right;
+        z-index: 100;
+    }
+
+
 }
