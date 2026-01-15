@@ -250,13 +250,33 @@ function renderHand(hand) {
         cardEl.addEventListener('click', () => {
             console.log('Clicked card:', card);
 
-            const isAnnouncing = document.getElementById('announceBtn').classList.contains('active');
-            socket.emit('playCard', card, { announce: isAnnouncing });
-
-            // Reset button state
+            // Check if this card is part of a marriage announcement
             const btn = document.getElementById('announceBtn');
-            btn.classList.remove('active');
-            btn.style.backgroundColor = '#ff9800'; // Reset color
+            let shouldAnnounce = false;
+            let announceSuit = null;
+
+            if (btn.style.display !== 'none' && btn.dataset.possibleSuits) {
+                const possibleSuits = JSON.parse(btn.dataset.possibleSuits);
+                const currentIndex = parseInt(btn.dataset.currentIndex) || 0;
+                const selectedSuit = possibleSuits[currentIndex];
+
+                // Check if the played card is K or Q of the selected suit
+                if (card.suit === selectedSuit && (card.rank === 'K' || card.rank === 'Q')) {
+                    shouldAnnounce = true;
+                    announceSuit = selectedSuit;
+                }
+            }
+
+            // Emit the card play with announcement info
+            if (shouldAnnounce) {
+                socket.emit('announce', { suit: announceSuit });
+                // Wait a bit for server to process announce, then play card
+                setTimeout(() => {
+                    socket.emit('playCard', card, { announce: false });
+                }, 100);
+            } else {
+                socket.emit('playCard', card, { announce: false });
+            }
         });
         handDiv.appendChild(cardEl);
     });
@@ -286,6 +306,20 @@ function checkMarriage() {
     if (possibleSuits.length > 0) {
         btn.style.display = 'inline-block';
 
+        // Store the possible suits and current selection index
+        if (!btn.dataset.possibleSuits || btn.dataset.possibleSuits !== JSON.stringify(possibleSuits)) {
+            btn.dataset.possibleSuits = JSON.stringify(possibleSuits);
+            btn.dataset.currentIndex = '0';
+        }
+
+        const currentIndex = parseInt(btn.dataset.currentIndex) || 0;
+        const currentSuit = possibleSuits[currentIndex];
+        const isTrump = currentSuit === currentTrumpSuit;
+        const suitSymbol = getSuitSymbol(currentSuit);
+
+        // Update button text to show which pair will be announced
+        btn.textContent = `${isTrump ? '40er' : '20er'} (${suitSymbol}) ansagen`;
+
         // Remove old listeners to avoid duplicates if called multiple times
         const newBtn = btn.cloneNode(true);
         btn.parentNode.replaceChild(newBtn, btn);
@@ -293,23 +327,25 @@ function checkMarriage() {
 
         btn.onclick = (e) => {
             e.stopPropagation();
-            // If multiple suits possible, we need UI to pick one. 
-            // For simplicity, pick the first one or ask? 
-            // Schnapsen: usually distinct. If 2 marriages, you pick which one to announce.
-            // Let's just pick the first one found for MVP or cycle?
-            // Or better: check which one matches the card played? NO, user wants immediate points.
 
-            // Simplest: If >1, maybe alert or specific UI. 
-            // Let's assume user picks the first available one for now.
-            const suitToAnnounce = possibleSuits[0];
-            socket.emit('announce', { suit: suitToAnnounce });
-            btn.style.display = 'none'; // Hide after announce
+            // If multiple suits available, cycle through them
+            if (possibleSuits.length > 1) {
+                const nextIndex = (currentIndex + 1) % possibleSuits.length;
+                btn.dataset.currentIndex = nextIndex.toString();
+                checkMarriage(); // Re-render button with new selection
+            } else {
+                // Only one suit, announce it directly
+                const suitToAnnounce = possibleSuits[0];
+                socket.emit('announce', { suit: suitToAnnounce });
+                btn.style.display = 'none'; // Hide after announce
+            }
         };
     } else {
         btn.style.display = 'none';
         btn.classList.remove('active');
     }
 }
+
 
 function renderOpponentHand(count) {
     const handDiv = document.getElementById('opponent-hand');
@@ -536,6 +572,22 @@ socket.on('roundOver', (data) => {
     const isWinner = data.winnerId === socket.id;
     const msg = isWinner ? 'Runde gewonnen!' : 'Runde verloren!';
     const bummerlMsg = `Gegner verliert ${data.bummerlLoss} Bummerl.`;
+
+    // Show win/loss message for 3 seconds
+    const winLossMsg = document.getElementById('win-loss-message');
+    if (winLossMsg) {
+        const winnerPoints = isWinner ? data.winnerTotalPoints : data.winnerTotalPoints;
+        const messageText = isWinner
+            ? `Spiel gewonnen\n${winnerPoints}`
+            : `Spiel verloren\n${winnerPoints}`;
+        winLossMsg.textContent = messageText;
+        winLossMsg.style.color = isWinner ? '#4CAF50' : '#f44336';
+        winLossMsg.style.display = 'block';
+        winLossMsg.style.whiteSpace = 'pre-line';
+        setTimeout(() => {
+            winLossMsg.style.display = 'none';
+        }, 4000);
+    }
 
     // Update Bummerl display
     document.getElementById('my-bummerl').textContent = isWinner ? data.winnerBummerl : data.loserBummerl;

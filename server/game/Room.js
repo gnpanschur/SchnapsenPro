@@ -458,6 +458,9 @@ class Room {
         let matchOver = false;
         if (winner.bummerlPoints >= 7) {
             matchOver = true;
+            // Award match points: +2 for 7:0 shutout, +1 otherwise
+            const matchPointsAwarded = (loser.bummerlPoints === 0) ? 2 : 1;
+            winner.matchWins += matchPointsAwarded;
             this.gameState = 'GAME_OVER';
         }
 
@@ -468,6 +471,8 @@ class Room {
             bummerlLoss,
             winnerBummerl: winner.bummerlPoints,
             loserBummerl: loser.bummerlPoints,
+            winnerMatchWins: winner.matchWins,
+            loserMatchWins: loser.matchWins,
             winnerTotalPoints: winner.points,
             loserTotalPoints: loser.points,
             trickCards,

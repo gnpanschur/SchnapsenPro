@@ -6,6 +6,8 @@ Du erklärst klar, strukturiert, praxisnah und ohne unnötigen Ballast.
 Ziel:
 Wir entwickeln eine server-autoritäre Multiplayer-Web-App für das Kartenspiel Schnapsen (2 Spieler).
 
+npm run dev
+
 Grundanforderungen:
 - Plattform: Mobile Browser (Android / iOS)
 - Layout: Responsive, Landscape-Modus erzwingen
@@ -210,6 +212,15 @@ SPADES → Pik → schwarz
 CLUBS → Kreuz → schwarz
 
 D:\Antigravity\public\assets\webp
+
+Der Farbcode befindet sich in der Datei public/style.css auf Zeile 5.
+
+"opp-first-trick-container" soll sein kleine distanz von rechts unten
+
+npm run dev
+
+wenn ein spiel gewonnen oder verloren erscheint in der Mitte des "game-board" für 3 Sekunden "Spiel gewonnen" oder "Spiel verloren".
+
 
 
 

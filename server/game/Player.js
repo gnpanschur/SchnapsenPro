@@ -7,6 +7,7 @@ class Player {
         this.tricks = []; // Won tricks
         this.points = 0; // Current game points (66 limit)
         this.bummerlPoints = 0; // Game points (Bummerl), counts 0 to 7
+        this.matchWins = 0; // Total matches won (persists across rounds, resets per session)
         this.connected = true;
         this.connected = true;
         this.reconnectTimer = null;

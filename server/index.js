@@ -93,8 +93,10 @@ io.on('connection', (socket) => {
                     scores: {
                         myPoints: p.points,
                         myBummerl: p.bummerlPoints,
+                        myMatchWins: p.matchWins,
                         oppPoints: opponent ? opponent.points : 0,
-                        oppBummerl: opponent ? opponent.bummerlPoints : 0
+                        oppBummerl: opponent ? opponent.bummerlPoints : 0,
+                        oppMatchWins: opponent ? opponent.matchWins : 0
                     },
                     announcements: room.announcements, // Send history
                     isTalonClosed: room.isTalonClosed,
@@ -118,8 +120,10 @@ io.on('connection', (socket) => {
                         scores: { // Initial scores
                             myPoints: 0,
                             myBummerl: 0,
+                            myMatchWins: 0,
                             oppPoints: 0,
-                            oppBummerl: 0
+                            oppBummerl: 0,
+                            oppMatchWins: 0
                         },
                         announcements: [], // Empty for new game
                         isTalonClosed: false,
@@ -168,6 +172,8 @@ io.on('connection', (socket) => {
                 bummerlLoss: r.bummerlLoss,
                 winnerBummerl: r.winnerBummerl,
                 loserBummerl: r.loserBummerl,
+                winnerMatchWins: r.winnerMatchWins,
+                loserMatchWins: r.loserMatchWins,
                 winnerTotalPoints: r.winnerTotalPoints,
                 loserTotalPoints: r.loserTotalPoints,
                 trickCards: r.trickCards,
@@ -290,6 +296,8 @@ io.on('connection', (socket) => {
                     bummerlLoss: result.bummerlLoss,
                     winnerBummerl: result.winnerBummerl,
                     loserBummerl: result.loserBummerl,
+                    winnerMatchWins: result.winnerMatchWins,
+                    loserMatchWins: result.loserMatchWins,
                     winnerTotalPoints: result.winnerTotalPoints,
                     loserTotalPoints: result.loserTotalPoints,
                     trickCards: result.trickCards,
@@ -412,8 +420,10 @@ io.on('connection', (socket) => {
                 scores: {
                     myPoints: 0,
                     myBummerl: 0,
+                    myMatchWins: player.matchWins,
                     oppPoints: 0,
-                    oppBummerl: 0
+                    oppBummerl: 0,
+                    oppMatchWins: opponent ? opponent.matchWins : 0
                 },
                 announcements: [],
                 isTalonClosed: false,

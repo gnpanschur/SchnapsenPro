@@ -88,9 +88,9 @@ body {
 
     #talon-stack {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 0;
+        bottom: 15%;
+        transform: none;
+        left: 70px;
         z-index: 10;
         width: 90px;
         height: 135px;
@@ -109,9 +109,9 @@ body {
 
     #trump-card {
         position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        left: 90px;
+        bottom: 15%;
+        transform: rotate(90deg);
+        left: 130px;
         /* Side by side with gap */
         z-index: 5;
         /* No rotation for maximum visibility */
@@ -123,6 +123,7 @@ body {
         gap: 20px;
         justify-content: center;
         margin: 10vh auto 0;
+        width: 50%;
     }
 
     #my-tricks-container {
@@ -149,8 +150,8 @@ body {
 
     #announcements-container {
         position: absolute;
-        bottom: 170px;
-        left: 20px;
+        top: calc(50% + 70px);
+        left: 70px;
         display: flex;
         flex-direction: column;
         gap: 5px;
@@ -160,28 +161,6 @@ body {
         overflow-y: auto;
     }
 
-    .announcement-item {
-        background-color: rgba(0, 0, 0, 0.7);
-        color: white;
-        padding: 5px 10px;
-        border-radius: 5px;
-        font-size: 0.9em;
-        font-weight: bold;
-        border: 1px solid #aaa;
-        animation: fadeIn 0.5s ease-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
 
     #turn-indicator {
         background-color: rgba(0, 0, 0, 0.5);
@@ -192,6 +171,87 @@ body {
         min-width: 200px;
         margin-top: 10px;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.announcement-item {
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.9em;
+    font-weight: bold;
+    border: 1px solid #aaa;
+    animation: blinkFast 4s ease-in-out;
+}
+
+@keyframes blinkFast {
+    0% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    6.25% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    12.5% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    18.75% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    25% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    31.25% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    37.5% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    43.75% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    50% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    56.25% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    62.5% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    68.75% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    75% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    81.25% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    87.5% {
+        background-color: rgba(255, 215, 0, 0.9);
+    }
+
+    93.75% {
+        background-color: rgba(0, 0, 0, 0.7);
+    }
+
+    100% {
+        background-color: rgba(0, 0, 0, 0.7);
     }
 }
 
@@ -298,7 +358,7 @@ body {
 }
 
 /* Mobile Landscape Optimizations (Small height) */
-@media screen and (orientation: landscape) and (max-height: 500px) {
+@media screen and (orientation: landscape) and (max-height: 900px) {
 
     /* Reset body scale for mobile landscape */
     body {
@@ -373,21 +433,20 @@ body {
         font-size: 0.8em;
     }
 
+    #turn-indicator {
+        font-size: 1.2em !important;
+    }
+
+    #trump-indicator {
+        font-size: 1.2em !important;
+    }
+
     /* Reduce Card Size */
     .card {
         width: 68px !important;
         height: 102px !important;
     }
 
-    #talon-stack {
-        width: 68px !important;
-        height: 102px !important;
-    }
-
-    #trump-card {
-        left: 70px !important;
-        /* Adjust overlap */
-    }
 
     /* Layout Adjustments */
     .hand {
@@ -398,7 +457,7 @@ body {
     /* Player Area (My Hand) needs to be definitely visible */
     #player-area {
         position: absolute;
-        bottom: 15px;
+        bottom: 40px;
         /* Fixed distance from bottom */
         left: 50%;
         transform: translateX(-50%);
@@ -408,7 +467,7 @@ body {
     /* Opponent Area (Top) */
     #opponent-area {
         position: absolute;
-        top: -50px;
+        top: -100px;
         /* Just below title/header potentially, or allow overlap if using center space */
         left: 50%;
         transform: translateX(-50%);
@@ -423,13 +482,31 @@ body {
         justify-content: center;
         position: absolute;
         /* Lock table to center */
-        top: 40%;
+        top: 25%;
         /* Center vertically */
         left: 50%;
         transform: translate(-50%, -50%);
         /* Center */
         width: 100%;
         height: auto;
+
+        #talon-stack {
+            position: absolute !important;
+            width: 68px !important;
+            height: 102px !important;
+            left: 70px !important;
+            top: -10px !important;
+            bottom: auto !important;
+            transform: none !important;
+        }
+
+        #trump-card {
+            position: absolute !important;
+            left: 100px !important;
+            top: -10px !important;
+            bottom: auto !important;
+            transform: rotate(90deg) !important;
+        }
     }
 
     /* Talon Position - Move to left side explicitly if needed, or let it flow in flex */
@@ -441,20 +518,21 @@ body {
 
     #talon-container {
         position: absolute;
-        left: 20px;
-        top: 50%;
+        left: 60px;
+        top: 65%;
         transform: translateY(-50%);
     }
 
     #trick-area {
         gap: 10px;
         /* Ensure it's centered */
-        margin: 0 auto;
+        margin: -10px auto 0;
+        width: 30%;
     }
 
     #announcements-container {
         position: absolute !important;
-        left: 5px !important;
+        left: 100px !important;
         bottom: -200px !important;
         /* Position at bottom left in landscape */
         scale: 0.8;
@@ -462,9 +540,10 @@ body {
     }
 
     #my-tricks-container {
-        right: 10px;
+        position: absolute;
+        right: 100px !important;
         /* Der Abstand von oben in % */
-        top: 5%;
+        top: 35% !important;
         scale: 0.8;
         transform-origin: center right;
         display: grid !important;
@@ -486,7 +565,7 @@ body {
         right: 5px !important;
         display: flex !important;
         /* Ensure it's visible if hidden by default */
-        scale: 0.9;
+        scale: 0.8;
         transform-origin: top right;
         z-index: 100;
     }
