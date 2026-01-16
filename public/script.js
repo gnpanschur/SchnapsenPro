@@ -611,7 +611,7 @@ socket.on('roundOver', (data) => {
     // ... (rest of roundOver)
     if (data.matchOver) {
         const winnerName = isWinner ? 'Du hast' : 'Gegner hat';
-        const msg = `MATCH VORBEI! ${winnerName} das Match gewonnen!`;
+        const msg = `MATCH VORBEI! ${winnerName} diese Partie gewonnen!`;
         const modal = document.getElementById('game-over-modal');
         const msgEl = document.getElementById('game-over-message');
 

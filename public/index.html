@@ -16,7 +16,7 @@
                 <p>Das Spiel ist für den Querformat-Modus optimiert.</p>
             </div>
         </div>
-        <h1>Schnapsen für 2</h1>
+        <h1>Schnapsen Pro</h1>
 
         <div id="lobby">
             <input type="text" id="playerName" placeholder="Dein Name (A-Z)" maxlength="12" style="font-size: 2em;">
@@ -44,9 +44,11 @@
                 <div id="trump-indicator" style="font-size: 1.9em; font-weight: bold; margin-top: 5px; color: white;">
                 </div>
                 <button id="nextRoundBtn"
-                    style="display: none; margin-top: 10px; padding: 10px 20px; font-size: 1.2em; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Neu
+                    style="display: none; margin-top: 10px; padding: 15px 30px; font-size: 1.8em; background-color: #4CAF50; color: white; border: none; cursor: pointer; border-radius: 8px;">Neu
                     geben</button>
             </div>
+
+            <div id="announcements-container"></div>
 
             <div id="game-board" class="hidden">
                 <!-- Win/Loss Message Overlay -->
@@ -73,7 +75,6 @@
                 </div>
 
                 <div id="table-area">
-                    <div id="announcements-container"></div>
                     <div id="talon-container">
                         <div id="talon-stack" class="card-back"></div>
                         <div id="trump-card"></div>
