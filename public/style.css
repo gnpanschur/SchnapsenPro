@@ -9,6 +9,9 @@ body {
     justify-content: center;
     align-items: center;
     height: 100vh;
+    /* Fallback for older browsers */
+    height: 100dvh;
+    /* Dynamic viewport height - accounts for mobile browser UI */
     overflow: hidden;
     transform: scale(0.8);
 
@@ -378,6 +381,9 @@ body {
     /* Scale down the entire game board to fit */
     #game-board {
         height: 100vh;
+        /* Fallback */
+        height: 100dvh;
+        /* Dynamic viewport - fixes address bar overlap */
         padding: 0 5px;
         /* Side padding */
         box-sizing: border-box;
