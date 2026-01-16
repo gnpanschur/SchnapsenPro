@@ -23,6 +23,12 @@ body {
     max-width: 800px;
 }
 
+h1,
+h2 {
+    margin: 5px 0;
+    padding: 0;
+}
+
 .hidden {
     display: none !important;
 }
