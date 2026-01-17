@@ -33,6 +33,42 @@ h2 {
     display: none !important;
 }
 
+/* Lobby input fields and buttons */
+#lobby {
+    padding: 40px 20px;
+    line-height: 1.8;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+}
+
+#lobby input[type="text"] {
+    width: 80%;
+    max-width: 400px;
+    padding: 15px;
+    box-sizing: border-box;
+    font-size: 1.5em !important;
+}
+
+#lobby button {
+    font-size: 1.5em !important;
+    padding: 12px 24px;
+}
+
+#createBtn {
+    background-color: #FFD700;
+    color: black;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+#createBtn:hover {
+    background-color: #FFC700;
+}
+
 .exit-btn {
     background-color: #ff4444;
     color: white;
@@ -48,6 +84,14 @@ h2 {
 
 .exit-btn:hover {
     background-color: #ff0000;
+}
+
+#gameStatus {
+    font-size: 1.0em;
+}
+
+#currentRoom {
+    font-size: 1.5em;
 }
 
 /* EXIT Button - freely positionable */
@@ -162,6 +206,18 @@ h2 {
     /* Change to move left (smaller) or right (larger) */
     top: 20px !important;
     /* Change to move up (smaller) or down (larger) */
+}
+
+/* Cards in opp-first-trick-cards - 50% horizontal overlap */
+/* Target the wrapper divs that contain the cards */
+#opp-first-trick-cards>div {
+    margin-left: -30px !important;
+    /* 50% of 50px scaled card width = 25px overlap */
+}
+
+#opp-first-trick-cards>div:first-child {
+    margin-left: 0 !important;
+    /* No overlap on the first wrapper */
 }
 
 #table-area {
