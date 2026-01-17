@@ -513,8 +513,7 @@ socket.on('trickCompleted', (data) => {
         const tricksContainer = document.getElementById('my-tricks-container');
         data.trickCards.forEach(item => {
             const cardEl = createCardElement(item.card);
-            cardEl.style.transform = 'scale(0.9)'; // Make them smaller
-            cardEl.style.margin = '-30px 0'; // Overlap
+            // Removed inline transform - now controlled by CSS
             tricksContainer.appendChild(cardEl);
         });
     }
@@ -937,4 +936,24 @@ infoModal.addEventListener('click', (e) => {
     if (e.target === infoModal) {
         infoModal.classList.add('hidden');
     }
+});
+
+// Initialize game state on page load - clear all game elements
+document.addEventListener('DOMContentLoaded', () => {
+    // Clear any residual game state
+    const trickArea = document.getElementById('trick-area');
+    const trumpCard = document.getElementById('trump-card');
+    const myTricksContainer = document.getElementById('my-tricks-container');
+    const playerHand = document.getElementById('player-hand');
+    const opponentHand = document.getElementById('opponent-hand');
+
+    if (trickArea) trickArea.innerHTML = '';
+    if (trumpCard) trumpCard.innerHTML = '';
+    if (myTricksContainer) myTricksContainer.innerHTML = '';
+    if (playerHand) playerHand.innerHTML = '';
+    if (opponentHand) opponentHand.innerHTML = '';
+
+    // Ensure game board is hidden
+    const gameBoard = document.getElementById('game-board');
+    if (gameBoard) gameBoard.classList.add('hidden');
 });

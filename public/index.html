@@ -29,12 +29,13 @@
 
         <div id="game" style="display: none;">
             <div class="header">
-                <h2><span style="color: #eef10a;">RAUMCODE: </span> <span id="currentRoom"></span> <button id="exitBtn"
-                        class="exit-btn">EXIT</button> <button id="infoBtnGame" class="exit-btn"
+                <h2 style="font-size: 1em;"><span style="color: #eef10a;">RAUMCODE: </span> <span
+                        id="currentRoom"></span> <button id="exitBtn" class="exit-btn">EXIT</button> <button
+                        id="infoBtnGame" class="exit-btn"
                         style="background-color: #2196F3; margin-left: 5px;">ℹ️</button></h2>
                 <div id="status" style="font-size: 0.8em; margin-bottom: 5px;">Connecting...</div>
                 <div id="gameStatus">Warte auf Gegner...</div>
-                <div id="turn-indicator" style="font-size: 1.9em; font-weight: bold; margin-top: 5px; color: #ffd700;">
+                <div id="turn-indicator" style="font-size: 1.0em; font-weight: bold; margin-top: 5px; color: #ffd700;">
                 </div>
                 <div id="trump-indicator" style="font-size: 1.9em; font-weight: bold; margin-top: 5px; color: white;">
                 </div>
@@ -56,13 +57,13 @@
                     <div id="opponent-hand" class="hand"></div>
                     <div id="score-board" style="font-size: 1.2em; margin: 10px 0;">
                         <span id="my-score-container"
-                            style="padding: 5px; border-radius: 5px; transition: all 0.3s;"><span
+                            style="padding: 0px; border-radius: 5px; transition: all 0.3s;"><span
                                 id="my-name-display">Du</span>: <span id="my-points">0</span> (<span
                                 id="my-bummerl">0</span>) <span style="color: #FFD700; font-weight: bold;">[<span
                                     id="my-matches">0</span>]</span></span>
                         <span style="margin: 0 10px;">|</span>
                         <span id="opp-score-container"
-                            style="padding: 5px; border-radius: 5px; transition: all 0.3s;"><span
+                            style="padding: 0px; border-radius: 5px; transition: all 0.3s;"><span
                                 id="opp-name-display">Gegner</span>: ??? (<span id="opponent-bummerl">0</span>) <span
                                 style="color: #FFD700; font-weight: bold;">[<span
                                     id="opponent-matches">0</span>]</span></span>
@@ -97,7 +98,7 @@
 
 
                 <div id="player-area" class="player-area">
-                    <div id="controls-container" style="text-align: center; margin-bottom: 0px; min-height: 30px;">
+                    <div id="controls-container" style="text-align: center; margin-bottom: -10px; min-height: 30px;">
                         <button id="exchangeBtn" class="action-btn"
                             style="display: none; background-color: #2196F3;">Trumpf tauschen</button>
                         <button id="announceBtn" class="action-btn"

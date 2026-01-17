@@ -1,3 +1,5 @@
+https://schnapsenpro.onrender.com
+
 Rolle:
 Du bist ein sehr erfahrener Profi-Softwareentwickler und Game-Architekt.
 Ich bin dein Schüler mit wenig Erfahrung.
@@ -220,6 +222,8 @@ Der Farbcode befindet sich in der Datei public/style.css auf Zeile 5.
 npm run dev
 
 wenn ein spiel gewonnen oder verloren erscheint in der Mitte des "game-board" für 3 Sekunden "Spiel gewonnen" oder "Spiel verloren".
+
+https://schnapsenpro.onrender.com
 
 
 
