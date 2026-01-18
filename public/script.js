@@ -632,6 +632,15 @@ socket.on('trumpExchanged', (data) => {
     const isMe = data.socketId === socket.id;
     gameStatusDiv.textContent = `${isMe ? 'Du hast' : 'Gegner hat'} Trumpf getauscht!`;
 
+    // Show notification box for 2 seconds
+    const notification = document.getElementById('trump-exchange-notification');
+    if (notification) {
+        notification.style.display = 'block';
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 2000);
+    }
+
     // Update visuals on table: The old trump card (now on table) is actually the JACK
     // Wait, the event sends newTrumpCard which is the Jack.
     // So we just update the trump card visual.
