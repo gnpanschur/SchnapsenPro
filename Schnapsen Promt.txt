@@ -223,6 +223,8 @@ npm run dev
 
 wenn ein spiel gewonnen oder verloren erscheint in der Mitte des "game-board" für 3 Sekunden "Spiel gewonnen" oder "Spiel verloren".
 
+https://dashboard.render.com/  "Manual Deploy"
+
 https://schnapsenpro.onrender.com
 
 
