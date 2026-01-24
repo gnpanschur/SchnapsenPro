@@ -257,7 +257,9 @@ function renderHand(hand) {
             let shouldAnnounce = false;
 
             // If we have a button for this suit and clicked K or Q, announce it!
-            if (matchingBtn && (card.rank === 'K' || card.rank === 'Q')) {
+            // IMPORTANT: Only announce if the button is VISIBLE.
+            // If the user already clicked the button (hiding it), we should NOT announce again.
+            if (matchingBtn && matchingBtn.style.display !== 'none' && (card.rank === 'K' || card.rank === 'Q')) {
                 shouldAnnounce = true;
             }
 
@@ -524,7 +526,8 @@ socket.on('handUpdate', (data) => {
         const matchingBtn = container ? container.querySelector(`button[data-suit="${data.newCard.suit}"]`) : null;
 
         let shouldAnnounce = false;
-        if (matchingBtn && (data.newCard.rank === 'K' || data.newCard.rank === 'Q')) {
+        // Check visibility to prevent double announce
+        if (matchingBtn && matchingBtn.style.display !== 'none' && (data.newCard.rank === 'K' || data.newCard.rank === 'Q')) {
             shouldAnnounce = true;
         }
 
