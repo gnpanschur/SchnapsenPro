@@ -250,26 +250,23 @@ function renderHand(hand) {
         cardEl.addEventListener('click', () => {
             console.log('Clicked card:', card);
 
-            // Check if this card is part of a marriage announcement
-            const btn = document.getElementById('announceBtn');
+            // Check if we can announce this suit (does a button exist for it?)
+            const container = document.getElementById('announce-buttons-container');
+            const matchingBtn = container ? container.querySelector(`button[data-suit="${card.suit}"]`) : null;
+
             let shouldAnnounce = false;
-            let announceSuit = null;
 
-            if (btn.style.display !== 'none' && btn.dataset.possibleSuits) {
-                const possibleSuits = JSON.parse(btn.dataset.possibleSuits);
-                const currentIndex = parseInt(btn.dataset.currentIndex) || 0;
-                const selectedSuit = possibleSuits[currentIndex];
-
-                // Check if the played card is K or Q of the selected suit
-                if (card.suit === selectedSuit && (card.rank === 'K' || card.rank === 'Q')) {
-                    shouldAnnounce = true;
-                    announceSuit = selectedSuit;
-                }
+            // If we have a button for this suit and clicked K or Q, announce it!
+            if (matchingBtn && (card.rank === 'K' || card.rank === 'Q')) {
+                shouldAnnounce = true;
             }
 
             // Emit the card play with announcement info
             if (shouldAnnounce) {
-                socket.emit('announce', { suit: announceSuit });
+                socket.emit('announce', { suit: card.suit });
+                // Hide button locally immediately to prevent double clicks
+                if (matchingBtn) matchingBtn.style.display = 'none';
+
                 // Wait a bit for server to process announce, then play card
                 setTimeout(() => {
                     socket.emit('playCard', card, { announce: false });
@@ -286,8 +283,10 @@ function renderHand(hand) {
 }
 
 function checkMarriage() {
-    let btn = document.getElementById('announceBtn');
-    // Simple check: do we have K and Q of same suit?
+    const container = document.getElementById('announce-buttons-container');
+    if (!container) return;
+    container.innerHTML = '';
+
     const suits = ['HEARTS', 'DIAMONDS', 'SPADES', 'CLUBS'];
     let possibleSuits = [];
 
@@ -300,49 +299,26 @@ function checkMarriage() {
         }
     }
 
-    // Only show if it's my turn
-    // Ideally check turn, but for now rely on server
-
     if (possibleSuits.length > 0) {
-        btn.style.display = 'inline-block';
+        possibleSuits.forEach(suit => {
+            const isTrump = suit === currentTrumpSuit;
+            const suitSymbol = getSuitSymbol(suit);
+            const btn = document.createElement('button');
+            btn.className = 'action-btn';
+            btn.style.backgroundColor = '#ff9800';
+            btn.style.marginLeft = '5px';
+            btn.dataset.suit = suit; // Mark suit for click detection
 
-        // Store the possible suits and current selection index
-        if (!btn.dataset.possibleSuits || btn.dataset.possibleSuits !== JSON.stringify(possibleSuits)) {
-            btn.dataset.possibleSuits = JSON.stringify(possibleSuits);
-            btn.dataset.currentIndex = '0';
-        }
+            // Adjust text for multiple buttons
+            btn.textContent = `${isTrump ? '40er' : '20er'} (${suitSymbol})`;
 
-        const currentIndex = parseInt(btn.dataset.currentIndex) || 0;
-        const currentSuit = possibleSuits[currentIndex];
-        const isTrump = currentSuit === currentTrumpSuit;
-        const suitSymbol = getSuitSymbol(currentSuit);
-
-        // Update button text to show which pair will be announced
-        btn.textContent = `${isTrump ? '40er' : '20er'} (${suitSymbol}) ansagen`;
-
-        // Remove old listeners to avoid duplicates if called multiple times
-        const newBtn = btn.cloneNode(true);
-        btn.parentNode.replaceChild(newBtn, btn);
-        btn = newBtn; // Update reference to the new button
-
-        btn.onclick = (e) => {
-            e.stopPropagation();
-
-            // If multiple suits available, cycle through them
-            if (possibleSuits.length > 1) {
-                const nextIndex = (currentIndex + 1) % possibleSuits.length;
-                btn.dataset.currentIndex = nextIndex.toString();
-                checkMarriage(); // Re-render button with new selection
-            } else {
-                // Only one suit, announce it directly
-                const suitToAnnounce = possibleSuits[0];
-                socket.emit('announce', { suit: suitToAnnounce });
-                btn.style.display = 'none'; // Hide after announce
-            }
-        };
-    } else {
-        btn.style.display = 'none';
-        btn.classList.remove('active');
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                socket.emit('announce', { suit: suit });
+                btn.style.display = 'none'; // Optimistic hide
+            };
+            container.appendChild(btn);
+        });
     }
 }
 
@@ -543,8 +519,24 @@ socket.on('handUpdate', (data) => {
     const handDiv = document.getElementById('player-hand');
     const cardEl = createCardElement(data.newCard);
     cardEl.addEventListener('click', () => {
-        const isAnnouncing = document.getElementById('announceBtn').classList.contains('active');
-        socket.emit('playCard', data.newCard, { announce: isAnnouncing });
+        // Updated logic for handUpdate as well
+        const container = document.getElementById('announce-buttons-container');
+        const matchingBtn = container ? container.querySelector(`button[data-suit="${data.newCard.suit}"]`) : null;
+
+        let shouldAnnounce = false;
+        if (matchingBtn && (data.newCard.rank === 'K' || data.newCard.rank === 'Q')) {
+            shouldAnnounce = true;
+        }
+
+        if (shouldAnnounce) {
+            socket.emit('announce', { suit: data.newCard.suit });
+            if (matchingBtn) matchingBtn.style.display = 'none';
+            setTimeout(() => {
+                socket.emit('playCard', data.newCard, { announce: false });
+            }, 100);
+        } else {
+            socket.emit('playCard', data.newCard, { announce: false });
+        }
     });
     handDiv.appendChild(cardEl);
 
