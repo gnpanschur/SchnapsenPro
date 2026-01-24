@@ -116,6 +116,16 @@ h2 {
     z-index: 200 !important;
 }
 
+/* Fullscreen Button - freely positionable */
+#fullscreenBtnGame {
+    position: absolute !important;
+    left: 45px !important;
+    /* Positioned to the right of Info Btn */
+    top: -15px !important;
+    margin-left: 0 !important;
+    z-index: 200 !important;
+}
+
 /* Game Board */
 #game-board {
     display: flex;

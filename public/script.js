@@ -797,6 +797,42 @@ document.getElementById('closeTalonBtn').addEventListener('click', () => {
     newNo.addEventListener('click', handleNo);
 });
 
+// Fullscreen Logic
+function toggleFullscreen() {
+    if (!document.fullscreenElement &&    /* Standard syntax */
+        !document.webkitFullscreenElement && /* Safari and Chrome */
+        !document.msFullscreenElement) {     /* IE11 */
+
+        const elem = document.documentElement;
+
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    } else {
+        if (document.exitFullscreen) {
+            document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) { /* Safari */
+            document.webkitExitFullscreen();
+        } else if (document.msExitFullscreen) { /* IE11 */
+            document.msExitFullscreen();
+        }
+    }
+}
+
+const fsBtnLobby = document.getElementById('fullscreenBtnLobby');
+if (fsBtnLobby) {
+    fsBtnLobby.addEventListener('click', toggleFullscreen);
+}
+
+const fsBtnGame = document.getElementById('fullscreenBtnGame');
+if (fsBtnGame) {
+    fsBtnGame.addEventListener('click', toggleFullscreen);
+}
+
 function checkCloseTalon() {
     const btn = document.getElementById('closeTalonBtn');
     if (!btn) return;

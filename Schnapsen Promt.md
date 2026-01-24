@@ -1,233 +1,461 @@
 https://schnapsenpro.onrender.com
 
+
+
 Rolle:
+
 Du bist ein sehr erfahrener Profi-Softwareentwickler und Game-Architekt.
+
 Ich bin dein Schüler mit wenig Erfahrung.
+
 Du erklärst klar, strukturiert, praxisnah und ohne unnötigen Ballast.
 
+
+
 Ziel:
+
 Wir entwickeln eine server-autoritäre Multiplayer-Web-App für das Kartenspiel Schnapsen (2 Spieler).
+
+
 
 npm run dev
 
-Grundanforderungen:
-- Plattform: Mobile Browser (Android / iOS)
-- Layout: Responsive, Landscape-Modus erzwingen
-- Frontend: HTML, CSS, JavaScript
-- Backend: Node.js + Express
-- Realtime-Kommunikation: WebSockets (Socket.IO)
-- Hosting lokal: http://localhost:3000
-- Später skalierbar für Cloud-Hosting
 
-Multiplayer & Lobby:
-- Lobby-System mit Raumcode
-- Raumcode: 5 Zeichen, nur A–Z (Großbuchstaben)
-- Maximal 2 Spieler pro Raum
-- Keine Zuschauer erlaubt
-- Spielername: 3–12 Zeichen, nur Buchstaben, keine Emojis
-- Reconnect-Zeit: 60 Sekunden
-- Während Reconnect: Gegner sieht "Spieler reconnectet..."
-- Nach Timeout: Aufgabe → Gegner erhält 1 Bummerl
+
+Grundanforderungen:
+
+\- Plattform: Mobile Browser (Android / iOS)
+
+\- Layout: Responsive, Landscape-Modus erzwingen
+
+\- Frontend: HTML, CSS, JavaScript
+
+\- Backend: Node.js + Express
+
+\- Realtime-Kommunikation: WebSockets (Socket.IO)
+
+\- Hosting lokal: http://localhost:3000
+
+\- Später skalierbar für Cloud-Hosting
+
+
+
+Multiplayer \& Lobby:
+
+\- Lobby-System mit Raumcode
+
+\- Raumcode: 5 Zeichen, nur A–Z (Großbuchstaben)
+
+\- Maximal 2 Spieler pro Raum
+
+\- Keine Zuschauer erlaubt
+
+\- Spielername: 3–12 Zeichen, nur Buchstaben, keine Emojis
+
+\- Reconnect-Zeit: 60 Sekunden
+
+\- Während Reconnect: Gegner sieht "Spieler reconnectet..."
+
+\- Nach Timeout: Aufgabe → Gegner erhält 1 Bummerl
+
+
 
 Server-Autorität:
-- 100 % server-autoritär
-- Client sendet nur Aktionen
-- Server prüft Regeln, Spielzustände und Zeitlimits
+
+\- 100 % server-autoritär
+
+\- Client sendet nur Aktionen
+
+\- Server prüft Regeln, Spielzustände und Zeitlimits
+
+
 
 Spiel-State-Machine:
-- LOBBY
-- WAITING_FOR_PLAYER
-- DEALING
-- PLAYER_TURN
-- WAITING_FOR_RECONNECT
-- GAME_OVER
+
+\- LOBBY
+
+\- WAITING\_FOR\_PLAYER
+
+\- DEALING
+
+\- PLAYER\_TURN
+
+\- WAITING\_FOR\_RECONNECT
+
+\- GAME\_OVER
+
+
 
 Schnapsen-Spielregeln (vereinfachte Version):
-- 2 Spieler, 20 Karten
-- Jeder Spieler erhält 5 Karten
-- Trumpf = letzte Karte im Talon
-- Solange Talon vorhanden:
-  - Kein Stichzwang
-- Talon leer:
-  - Farbzwang
-- Trumpfwechsel:
-  - Jederzeit im eigenen Zug
-  - Nur solange Talon nicht leer
-- Hochzeit:
-  - Pflichtansage zu Stichbeginn
-  - Zählt erst nach gewonnenem Stich
-  - 20 Punkte (König + Ober)
-  - 40 Punkte (Trumpf-König + Trumpf-Ober)
-- Punkteanzeige:
-  - Nur eigene Punkte sichtbar
 
-Spielende & Bummerl:
-- Ein Spiel endet bei:
-  - 66 Punkten ODER
-  - Talon leer
-- Bummerl-Vergabe:
-  - Gegner > 33 Punkte → 1 Bummerl
-  - Gegner < 33 Punkte → 2 Bummerl
-  - Gegner = 0 Punkte → 3 Bummerl (Schneider)
-- Match-Ende bei 7 Bummerl
-- Startspieler wechselt nach jedem Spiel
-- Neues Spiel startet über Button ("Neues Spiel")
+\- 2 Spieler, 20 Karten
+
+\- Jeder Spieler erhält 5 Karten
+
+\- Trumpf = letzte Karte im Talon
+
+\- Solange Talon vorhanden:
+
+&nbsp; - Kein Stichzwang
+
+\- Talon leer:
+
+&nbsp; - Farbzwang
+
+\- Trumpfwechsel:
+
+&nbsp; - Jederzeit im eigenen Zug
+
+&nbsp; - Nur solange Talon nicht leer
+
+\- Hochzeit:
+
+&nbsp; - Pflichtansage zu Stichbeginn
+
+&nbsp; - Zählt erst nach gewonnenem Stich
+
+&nbsp; - 20 Punkte (König + Ober)
+
+&nbsp; - 40 Punkte (Trumpf-König + Trumpf-Ober)
+
+\- Punkteanzeige:
+
+&nbsp; - Nur eigene Punkte sichtbar
+
+
+
+Spielende \& Bummerl:
+
+\- Ein Spiel endet bei:
+
+&nbsp; - 66 Punkten ODER
+
+&nbsp; - Talon leer
+
+\- Bummerl-Vergabe:
+
+&nbsp; - Gegner > 33 Punkte → 1 Bummerl
+
+&nbsp; - Gegner < 33 Punkte → 2 Bummerl
+
+&nbsp; - Gegner = 0 Punkte → 3 Bummerl (Schneider)
+
+\- Match-Ende bei 7 Bummerl
+
+\- Startspieler wechselt nach jedem Spiel
+
+\- Neues Spiel startet über Button ("Neues Spiel")
+
+
 
 Timeouts:
-- Spieler hat 60 Sekunden pro Aktion
-- Timeout = Aufgabe
-- Gegner gewinnt automatisch
+
+\- Spieler hat 60 Sekunden pro Aktion
+
+\- Timeout = Aufgabe
+
+\- Gegner gewinnt automatisch
+
+
 
 Bedienung:
-- Karte antippen → sofort spielen
-- Talon und Ablagestapel für beide sichtbar
 
-Assets & Karten:
-- Kartenformate: .png, .jpg, .webp
-- Einheitliche Dateinamen (kleinbuchstaben + underscore)
-  Beispiel: herz_ass.png, eichel_ober.webp
-- Kartenlogik strikt getrennt von Assets
-- Struktur:
-  /assets/cards/doppeldeutsch/
-  /assets/cards/franzoesisch/
-- Kartensätze pro Raum umschaltbar
-- Kartenrücken vorerst fix
+\- Karte antippen → sofort spielen
+
+\- Talon und Ablagestapel für beide sichtbar
+
+
+
+Assets \& Karten:
+
+\- Kartenformate: .png, .jpg, .webp
+
+\- Einheitliche Dateinamen (kleinbuchstaben + underscore)
+
+&nbsp; Beispiel: herz\_ass.png, eichel\_ober.webp
+
+\- Kartenlogik strikt getrennt von Assets
+
+\- Struktur:
+
+&nbsp; /assets/cards/doppeldeutsch/
+
+&nbsp; /assets/cards/franzoesisch/
+
+\- Kartensätze pro Raum umschaltbar
+
+\- Kartenrücken vorerst fix
+
+
 
 Entwicklungsstrategie:
-- Schrittweise Entwicklung
-- Zuerst Backend + Spiellogik
-- Dann Frontend-Anbindung
-- Klare Trennung von Game-Logic, Netzwerk und UI
-- Fokus auf saubere Architektur statt Featurespam
+
+\- Schrittweise Entwicklung
+
+\- Zuerst Backend + Spiellogik
+
+\- Dann Frontend-Anbindung
+
+\- Klare Trennung von Game-Logic, Netzwerk und UI
+
+\- Fokus auf saubere Architektur statt Featurespam
+
+
 
 Aufgabe:
+
 Beginne mit:
-1. Projektstruktur
-2. Basis-Express-Server
-3. WebSocket-Setup
-4. Raum- & Spielerverwaltung
-5. Game-State-Machine (ohne UI)
+
+1\. Projektstruktur
+
+2\. Basis-Express-Server
+
+3\. WebSocket-Setup
+
+4\. Raum- \& Spielerverwaltung
+
+5\. Game-State-Machine (ohne UI)
+
 ----------------------------------------------
-1. Erweiterte Spielregeln (Priorität: Hoch)
+
+1\. Erweiterte Spielregeln (Priorität: Hoch)
+
 Derzeit fehlt noch die spezifische Logik, die Schnapsen so taktisch macht.
 
 
+
+
+
 Stichzwang (Man muss stechen, wenn man bedienen kann). Aktuell prüft der Code dies noch nicht konsequent.
-2. UI/UX Erweiterungen (Priorität: Mittel)
+
+2\. UI/UX Erweiterungen (Priorität: Mittel)
+
 Das Frontend muss diese neuen Aktionen unterstützen.
 
+
+
 Buttons für Aktionen: "20er/40er ansagen", "Trumpf tauschen", "Zudrehen".
+
 Visuelles Feedback: Anzeigen, wenn der Talon geschlossen ist (z.B. Grafik ändert sich, Stapel wird gesperrt).
+
 Bessere Spielstandsanzeige: Detailliertere Anzeige, warum Punkte vergeben wurden (z.B. "+40 für Ansage").
+
+
+
+
 
 
 
 ---------------------------------------------
 
+
+
 Antigravity
 
- ➜  Local:   http://localhost:5173/
-  ➜  Network: use --host to expose
-  ➜  press h + enter to show help
+
+
+&nbsp;➜  Local:   http://localhost:5173/
+
+&nbsp; ➜  Network: use --host to expose
+
+&nbsp; ➜  press h + enter to show help
+
+
 
 npm create vite@latest schnapsen-royal
+
 npm install
+
 npm run dev
+
 http://localhost:3000/
+
+
 
 okay, mach das
 
- lade die Seite neu - am besten mit STRG + F5
+
+
+&nbsp;lade die Seite neu - am besten mit STRG + F5
+
+
 
 beim zudrehen Verbindung verloren
 
+
+
 Beim Zudrehen: Fenster öffnet sich: "willst du wirklich zudrehen?✅❌"
+
+
 
 Ich werde wie gewünscht ein benutzerdefiniertes Popup-Fenster für die Bestätigung „Talon schließen“ mit den Schaltflächen ✅ und ❌ hinzufügen.
 
-Ich habe das benutzerdefinierte Bestätigungsfenster implementiert!
+
 
 Wenn Sie nun auf „Talon zudrehen” klicken, erscheint anstelle der Browser-Warnmeldung ein dunkles Popup-Fenster im Glas-Morphismus-Stil mit großen ✅- und ❌-Schaltflächen.
 
+
+
 Probieren Sie es doch einmal im Browser aus! Gefällt es Ihnen?
+
+
 
 Füge einen EXIT Button hinzu, Das ganze Spiel und auch Lobby wird beendet.
 
+
+
 20 oder 40 punkte zählt ich nur, wenn ich mindestens einen beliebigen  Stich habe.
+
 Wenn Spiel vorbei, dann dropdown  "Revanche?" (neues Spiel) oder EXIT
+
 Spiel beendet.
+
 Möchtest du eine Revanche starten oder das Spiel verlassen?
 
+
+
 Revanche ist erst nach 7 Bummerl möglich.
+
 Die Auswahl „Revanche / Exit“ wird nur nach Match-Ende (7 Bummerl) angezeigt.
+
 Bei Revanche werden Spielstand und Bummerl beider Spieler auf 0 gesetzt und ein neues Match gestartet.
+
+
 
 wenn neu geben, dann alternate between two Players
 
+
+
 Beim "neu Geben" wechselt der Geber abwechselnd zwischen den beiden Spielern.
+
 Zuerst gibt Spieler A, beim nächsten Spiel Spieler B, dann wieder Spieler A usw. Der Geber wechselt nach jedem Spiel
+
+
 
 Er hat den letzten Zug (20er oder 40er angesagt) noch im Memory, obwohl ein jetzt "neues Spiel" ist. Deswegen verlangt er König oder Dame zu beginn, was nicht richtig ist
 
+
+
 Meine Punktezahl beim Gegner nicht anzeigen
 
+
+
 (Auf localhost: 3000 wird folgendes angezeigt:
+
 SPIEL VORBEI! Gegner hat das Match gewonnen! Neues Spiel ? )
 
-Diese Info soll nicht angezeigt werden! Das führt bei OK zum Absturz.
+
 
 Statt dessen soll das "Popup-Fenster - Revanche / EXIT" erscheinen
+
 -----------------------------------------
+
 Wenn ich am Zug bin, kann ich den Trumpf austauschen, auch sofort ganz am Anfang.
 
+
+
 Wenn ein Match gewonnen, dann Neues Info Text Feld : Name xxx 1 Match gewonnen. Bei Schneider 2 Matchpunkte hinzu (das geht bis 7)
+
 ----------------------------------------------------------
+
 Spielkarte Größe: 59x91 mm / 300 DPI (Druck, ordentlich scharf):
+
 696 × 1075 px
 
+
+
 96 DPI (Bildschirm, Klassiker):
+
 223 × 344 px
+
+
 
 mit 58 KB exportiert jpg soll aber dann (oder besser WebP) 30 - 40 KB
 
+
+
 A     Letzer Name: As (Ass) — 11 Punkte
+
 10   Letzer Name: Zehner — 10 Punkte
+
 K    Letzer Name: König — 4 Punkte
+
 Q    Letzer Name: Dame (im deutschen Blatt oft Ober) — 3 Punkte
+
 J     Letzer Name: Bube (im deutschen Blatt oft Unter) — 2 Punkte
+
+
 
 ♣ / ♠ / ♦ / ♥
 
+
+
 Rückseite: BACK.jpg
-Vorderseiten: [FARBE]_[WERT].jpg
+
+Vorderseiten: \[FARBE]\_\[WERT].jpg
+
 Farben: HEARTS, DIAMONDS, SPADES, CLUBS
+
 Werte: A, 10, K, Q, J
+
 Beispiele:
 
-HEARTS_A.jpg (Herz As)
-CLUBS_J.jpg (Kreuz Bube)
+
+
+HEARTS\_A.jpg (Herz As)
+
+CLUBS\_J.jpg (Kreuz Bube)
+
 BACK.jpg (Rückseite)
 
+
+
 HEARTS → Herz → rot
+
 DIAMONDS → Karo → rot
+
 SPADES → Pik → schwarz
+
 CLUBS → Kreuz → schwarz
 
-D:\Antigravity\public\assets\webp
 
-Der Farbcode befindet sich in der Datei public/style.css auf Zeile 5.
+
+D:\\Antigravity\\public\\assets\\webp
+
+
 
 "opp-first-trick-container" soll sein kleine distanz von rechts unten
 
-Die Funktion, die dafür sorgt, dass die Adressleiste verschwindet, ist die Fullscreen API (Vollbildmodus). Damit der Bildschirm gleichzeitig anbleibt, wird zusätzlich die Screen Wake Lock API verwendet.
+
 
 npm run dev
 
+
+
 wenn ein spiel gewonnen oder verloren erscheint in der Mitte des "game-board" für 3 Sekunden "Spiel gewonnen" oder "Spiel verloren".
 
-https://dashboard.render.com/  "Manual Deploy"
 
-https://schnapsenpro.onrender.com
+
+**https://dashboard.render.com/**  "Manual Deploy"
+
+deploy last commit:  Letzten Commit bereitstellen
+
+Deploy a specific commit:  Bestimmten Commit bereitstellen
+
+clear build ciche and deploy:  Build-Cache löschen und bereitstellen
+
+
+
+**https://schnapsenpro.onrender.com**
+
+
+
+
+
+
+
+
+
 
 
 
