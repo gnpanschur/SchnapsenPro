@@ -119,9 +119,10 @@ h2 {
 /* Fullscreen Button - freely positionable */
 #fullscreenBtnGame {
     position: absolute !important;
-    left: 45px !important;
-    /* Positioned to the right of Info Btn */
-    top: -15px !important;
+    left: -20px !important;
+    /* Aligned left with Info Btn */
+    top: 35px !important;
+    /* Moved down below Info Btn (-15px + 50px approx) */
     margin-left: 0 !important;
     z-index: 200 !important;
 }
