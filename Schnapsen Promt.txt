@@ -229,6 +229,7 @@ https://dashboard.render.com/  "Manual Deploy"
 
 https://schnapsenpro.onrender.com
 
+Bitte alle Änderungen auf GitHub speichern (push).
 
 
 

@@ -258,8 +258,11 @@ function renderHand(hand) {
 
             // If we have a button for this suit and clicked K or Q, announce it!
             // IMPORTANT: Only announce if the button is VISIBLE.
-            // If the user already clicked the button (hiding it), we should NOT announce again.
-            if (matchingBtn && matchingBtn.style.display !== 'none' && (card.rank === 'K' || card.rank === 'Q')) {
+            // AND -> Only if we are LEADING the trick (trick area empty).
+            const trickArea = document.getElementById('trick-area');
+            const isLeading = trickArea && trickArea.children.length === 0;
+
+            if (matchingBtn && matchingBtn.style.display !== 'none' && (card.rank === 'K' || card.rank === 'Q') && isLeading) {
                 shouldAnnounce = true;
             }
 
