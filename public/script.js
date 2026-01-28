@@ -27,7 +27,7 @@ const statusDiv = document.getElementById('status');
 const lobbyDiv = document.getElementById('lobby');
 const gameDiv = document.getElementById('game');
 const currentRoomSpan = document.getElementById('currentRoom');
-const gameStatusDiv = document.getElementById('gameStatus');
+const gameStatusDiv = { textContent: '' }; // Element removed
 
 let trickClearTimeout = null; // Store timeout ID for clearing trick
 
@@ -511,7 +511,7 @@ socket.on('trickCompleted', (data) => {
             talonStack.style.display = 'none';
             document.getElementById('trump-card').innerHTML = ''; // Trump is gone if talon empty (usually)
         }
-    }, 5000);
+    }, 1000);
 });
 
 socket.on('handUpdate', (data) => {
@@ -793,6 +793,27 @@ document.getElementById('closeTalonBtn').addEventListener('click', () => {
 });
 
 // Fullscreen Logic
+let wakeLock = null;
+
+async function requestWakeLock() {
+    try {
+        wakeLock = await navigator.wakeLock.request('screen');
+        console.log('Wake Lock is active');
+        wakeLock.addEventListener('release', () => {
+            console.log('Wake Lock was released');
+        });
+    } catch (err) {
+        console.error(`${err.name}, ${err.message}`);
+    }
+}
+
+async function releaseWakeLock() {
+    if (wakeLock !== null) {
+        await wakeLock.release();
+        wakeLock = null;
+    }
+}
+
 function toggleFullscreen() {
     if (!document.fullscreenElement &&    /* Standard syntax */
         !document.webkitFullscreenElement && /* Safari and Chrome */
@@ -801,7 +822,11 @@ function toggleFullscreen() {
         const elem = document.documentElement;
 
         if (elem.requestFullscreen) {
-            elem.requestFullscreen();
+            elem.requestFullscreen().then(() => {
+                requestWakeLock();
+            }).catch(err => {
+                console.error(`Error attempting to enable fullscreen: ${err.message} (${err.name})`);
+            });
         } else if (elem.webkitRequestFullscreen) { /* Safari */
             elem.webkitRequestFullscreen();
         } else if (elem.msRequestFullscreen) { /* IE11 */
@@ -809,7 +834,9 @@ function toggleFullscreen() {
         }
     } else {
         if (document.exitFullscreen) {
-            document.exitFullscreen();
+            document.exitFullscreen().then(() => {
+                releaseWakeLock();
+            });
         } else if (document.webkitExitFullscreen) { /* Safari */
             document.webkitExitFullscreen();
         } else if (document.msExitFullscreen) { /* IE11 */
@@ -817,6 +844,22 @@ function toggleFullscreen() {
         }
     }
 }
+
+// Handle Fullscreen Change (e.g. user presses ESC)
+document.addEventListener('fullscreenchange', () => {
+    if (!document.fullscreenElement) {
+        releaseWakeLock();
+    } else {
+        requestWakeLock(); // Re-acquire if somehow lost or separate mechanism
+    }
+});
+
+// Handle Visibility Change (Re-acquire lock if tab hidden then shown)
+document.addEventListener('visibilitychange', async () => {
+    if (wakeLock !== null && document.visibilityState === 'visible') {
+        await requestWakeLock();
+    }
+});
 
 const fsBtnLobby = document.getElementById('fullscreenBtnLobby');
 if (fsBtnLobby) {
