@@ -34,39 +34,124 @@ h2 {
 }
 
 /* Lobby input fields and buttons */
+/* Lobby Redesign */
 #lobby {
-    padding: 40px 20px;
-    line-height: 1.8;
+    padding: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 20px;
+    gap: 30px;
+    width: 100%;
+    /* box-sizing: border-box; */
+}
+
+.lobby-section {
+    width: 90%;
+    max-width: 500px;
+    padding: 25px;
+    border-radius: 20px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.create-section {
+    background-color: #E3F2FD;
+    /* Light Blue */
+    border: 2px solid #90CAF9;
+}
+
+.join-section {
+    background-color: #FFF9C4;
+    /* Light Yellow */
+    border: 2px solid #FFF59D;
+}
+
+.lobby-section h2 {
+    color: #333;
+    font-size: 1.8em;
+    margin-bottom: 10px;
+    text-shadow: none;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+}
+
+.input-group label {
+    font-size: 0.9em;
+    font-weight: bold;
+    color: #555;
+    text-transform: uppercase;
+    margin-left: 5px;
 }
 
 #lobby input[type="text"] {
-    width: 80%;
-    max-width: 400px;
+    width: 100%;
     padding: 15px;
+    border: 2px solid #ddd;
+    border-radius: 10px;
+    font-size: 1.5em;
+    text-align: center;
+    background-color: white;
+    color: #333;
+    font-weight: bold;
     box-sizing: border-box;
-    font-size: 1.5em !important;
 }
 
 #lobby button {
-    font-size: 1.5em !important;
-    padding: 12px 24px;
+    width: 100%;
+    padding: 15px;
+    font-size: 1.6em;
+    font-weight: 800;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    text-transform: uppercase;
+    box-shadow: 0 4px 0 rgba(0, 0, 0, 0.2);
+    transition: transform 0.1s, box-shadow 0.1s;
+    margin-top: 10px;
+    box-sizing: border-box;
+}
+
+#lobby button:active {
+    transform: translateY(4px);
+    box-shadow: none;
 }
 
 #createBtn {
-    background-color: #FFD700;
-    color: black;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-weight: bold;
+    background-color: #81C784;
+    /* Greenish/Blue */
+    background-color: #64B5F6;
+    /* Blue */
+    color: white;
 }
 
-#createBtn:hover {
-    background-color: #FFC700;
+#joinBtn {
+    background-color: #FBC02D;
+    /* Dark Yellow */
+    color: black;
+}
+
+.lobby-controls {
+    display: flex;
+    gap: 20px;
+    margin-top: 20px;
+}
+
+.icon-btn {
+    background-color: rgba(255, 255, 255, 0.2) !important;
+    border: 1px solid rgba(255, 255, 255, 0.4) !important;
+    color: white !important;
+    font-size: 1.2em !important;
+    padding: 10px 20px !important;
+    width: auto !important;
+    box-shadow: none !important;
 }
 
 .exit-btn {

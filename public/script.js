@@ -31,8 +31,11 @@ const gameStatusDiv = { textContent: '' }; // Element removed
 
 let trickClearTimeout = null; // Store timeout ID for clearing trick
 
-const playerNameInput = document.getElementById('playerName');
-const roomCodeInput = document.getElementById('roomCode');
+// New Input Elements
+const creatorNameInput = document.getElementById('creatorName');
+const opponentNameInput = document.getElementById('opponentNameInput');
+const joinerNameInput = document.getElementById('joinerName');
+
 const createBtn = document.getElementById('createBtn');
 const joinBtn = document.getElementById('joinBtn');
 
@@ -45,19 +48,31 @@ function showGame(roomId) {
 
 // Event Listeners
 createBtn.addEventListener('click', () => {
-    const name = playerNameInput.value.trim();
-    if (!name) return alert('Bitte Namen eingeben!');
+    const name = creatorNameInput.value.trim();
+    const opponentName = opponentNameInput.value.trim();
+
+    if (!name) return alert('Bitte deinen Namen eingeben!');
+    if (!opponentName) return alert('Bitte Namen des Gegners eingeben!');
+
+    // Logic: Room ID = Opponent Name (lowercased)
+    // This way, the opponent just enters their own name to join.
+    const customRoomId = opponentName.toLowerCase();
+
     localStorage.setItem('schnapsen_username', name);
-    socket.emit('createRoom', { name, playerId });
+    socket.emit('createRoom', { name, playerId, customRoomId });
 });
 
 joinBtn.addEventListener('click', () => {
-    const name = playerNameInput.value.trim();
-    const code = roomCodeInput.value.trim().toUpperCase();
-    if (!name) return alert('Bitte Namen eingeben!');
-    if (code.length !== 5) return alert('Code muss 5 Zeichen lang sein!');
+    const name = joinerNameInput.value.trim();
+
+    if (!name) return alert('Bitte deinen Namen eingeben!');
+
+    // Logic: Room ID = My Name (lowercased)
+    // Because the creator reserved the room for ME (my name).
+    const roomIdToJoin = name.toLowerCase();
+
     localStorage.setItem('schnapsen_username', name); // Store my name
-    socket.emit('joinRoom', { roomId: code, playerName: name, playerId });
+    socket.emit('joinRoom', { roomId: roomIdToJoin, playerName: name, playerId });
 });
 
 // Socket Events

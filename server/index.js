@@ -32,8 +32,18 @@ const rooms = new Map(); // roomId -> Room
 io.on('connection', (socket) => {
     console.log('A user connected:', socket.id);
 
-    socket.on('createRoom', ({ name, playerId }) => {
-        const roomId = generateRoomCode();
+    socket.on('createRoom', ({ name, playerId, customRoomId }) => {
+        let roomId;
+        if (customRoomId) {
+            roomId = customRoomId.toLowerCase();
+            if (rooms.has(roomId)) {
+                socket.emit('error', 'Raum existiert bereits!');
+                return;
+            }
+        } else {
+            roomId = generateRoomCode();
+        }
+
         const room = new Room(roomId);
         // Use client-provided playerId if available, else socket.id
         const pId = playerId || socket.id;
